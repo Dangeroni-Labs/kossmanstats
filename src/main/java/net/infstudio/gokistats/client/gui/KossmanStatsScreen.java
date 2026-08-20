@@ -1,23 +1,45 @@
 package net.infstudio.gokistats.client.gui;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.infstudio.gokistats.client.state.ClientStatSnapshotCache;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.progression.StatProgression;
+import net.infstudio.gokistats.fabric.network.StatUpgradeRequestPayload;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public final class KossmanStatsScreen extends Screen {
 	private static final int ROW_HEIGHT = 18;
 	private static final int PANEL_WIDTH = 320;
+	private static final int BUTTON_SIZE = 16;
 	private static final int TITLE_COLOR = 0xFFFFFFFF;
 	private static final int TEXT_COLOR = 0xFFD8D8D8;
 	private static final int MUTED_COLOR = 0xFFA0A0A0;
 	private static final int PANEL_COLOR = 0xB0202020;
+	private final Map<StatDefinition, Button> upgradeButtons = new LinkedHashMap<>();
 
 	public KossmanStatsScreen() {
 		super(Component.translatable("screen.gokistats.stats"));
+	}
+
+	@Override
+	protected void init() {
+		upgradeButtons.clear();
+		int left = (width - PANEL_WIDTH) / 2;
+		int y = rowStartY();
+
+		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
+			Button button = Button.builder(Component.literal("+"), pressed -> requestUpgrade(stat))
+					.bounds(left + 294, y - 4, BUTTON_SIZE, BUTTON_SIZE)
+					.build();
+			upgradeButtons.put(stat, addRenderableWidget(button));
+			y += ROW_HEIGHT;
+		}
 	}
 
 	@Override
@@ -25,9 +47,10 @@ public final class KossmanStatsScreen extends Screen {
 		graphics.fill(0, 0, width, height, 0xC0101010);
 		int left = (width - PANEL_WIDTH) / 2;
 		int top = 28;
-		int y = top + 28;
+		int y = rowStartY();
 
 		graphics.centeredText(font, title, width / 2, 14, TITLE_COLOR);
+		updateButtonStates();
 
 		if (!ClientStatSnapshotCache.hasSnapshot()) {
 			graphics.centeredText(
@@ -67,6 +90,27 @@ public final class KossmanStatsScreen extends Screen {
 		graphics.text(font, name, left, y, TEXT_COLOR);
 		graphics.text(font, levelText, left + 140, y, TEXT_COLOR);
 		graphics.text(font, nextText, left + 220, y, MUTED_COLOR);
+	}
+
+	private void updateButtonStates() {
+		for (Map.Entry<StatDefinition, Button> entry : upgradeButtons.entrySet()) {
+			StatDefinition stat = entry.getKey();
+			Button button = entry.getValue();
+			int level = ClientStatSnapshotCache.level(stat);
+
+			button.visible = ClientStatSnapshotCache.hasSnapshot();
+			button.active = level < stat.maxLevel();
+		}
+	}
+
+	private void requestUpgrade(StatDefinition stat) {
+		if (ClientPlayNetworking.canSend(StatUpgradeRequestPayload.ID)) {
+			ClientPlayNetworking.send(new StatUpgradeRequestPayload(stat.id().value()));
+		}
+	}
+
+	private int rowStartY() {
+		return 56;
 	}
 
 	private String nextCostText(StatDefinition stat, int level) {

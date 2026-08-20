@@ -2,7 +2,6 @@ package net.infstudio.gokistats.client.state;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.infstudio.gokistats.KossmanStats;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.definition.StatId;
@@ -38,6 +37,5 @@ public final class ClientStatSnapshotCache {
 
 		latest = new StatSnapshot(knownLevels);
 		receivedSnapshot = true;
-		KossmanStats.LOGGER.info("Received stat snapshot with {} known stat levels.", latest.levels().size());
 	}
 }
