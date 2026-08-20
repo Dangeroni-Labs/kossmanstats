@@ -22,6 +22,9 @@
   "entrypoints": {
     "main": [
       "net.infstudio.gokistats.KossmanStats"
+    ],
+    "client": [
+      "net.infstudio.gokistats.client.KossmanStatsClient"
     ]
   },
   "mixins": [

@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.fabric.effect.StatEffects;
+import net.infstudio.gokistats.fabric.network.StatSnapshotSync;
 import net.infstudio.gokistats.fabric.progression.StatUpgradeService;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.minecraft.commands.CommandSourceStack;
@@ -55,6 +56,7 @@ public final class KossmanStatsCommands {
 
 					if (result.upgraded()) {
 						StatEffects.afterUpgrade(player, stat);
+						StatSnapshotSync.send(player);
 						context.getSource().sendSuccess(
 								() -> Component.literal(result.message() + " Cost: " + result.cost() + " XP."),
 								false

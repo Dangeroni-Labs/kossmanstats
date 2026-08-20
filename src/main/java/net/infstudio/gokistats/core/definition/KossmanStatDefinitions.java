@@ -66,11 +66,17 @@ public final class KossmanStatDefinitions {
 	);
 	private static final Map<String, StatDefinition> BY_COMMAND_NAME = ALL.stream()
 			.collect(Collectors.toUnmodifiableMap(StatDefinition::commandName, stat -> stat));
+	private static final Map<StatId, StatDefinition> BY_ID = ALL.stream()
+			.collect(Collectors.toUnmodifiableMap(StatDefinition::id, stat -> stat));
 
 	private KossmanStatDefinitions() {
 	}
 
 	public static Optional<StatDefinition> byCommandName(String commandName) {
 		return Optional.ofNullable(BY_COMMAND_NAME.get(commandName));
+	}
+
+	public static Optional<StatDefinition> byId(StatId id) {
+		return Optional.ofNullable(BY_ID.get(id));
 	}
 }
