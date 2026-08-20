@@ -32,7 +32,7 @@ public final class CombatDamageHooks {
 			return originalDamage;
 		}
 
-		return originalDamage + Math.round(originalDamage + pugilismBonus);
+		return (float) (originalDamage + pugilismBonus);
 	}
 
 	private static double swordsmanshipBonus(ServerPlayer player, ItemStack stack) {

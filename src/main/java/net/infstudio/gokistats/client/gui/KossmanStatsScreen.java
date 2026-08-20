@@ -68,6 +68,14 @@ public final class KossmanStatsScreen extends Screen {
 
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
 			renderStatRow(graphics, stat, left, y);
+			if (isMouseOverRow(mouseX, mouseY, left, y)) {
+				graphics.setComponentTooltipForNextFrame(
+						font,
+						StatTooltipContent.forStat(stat, ClientStatSnapshotCache.level(stat)),
+						mouseX,
+						mouseY
+				);
+			}
 			y += ROW_HEIGHT;
 		}
 
@@ -107,6 +115,13 @@ public final class KossmanStatsScreen extends Screen {
 		if (ClientPlayNetworking.canSend(StatUpgradeRequestPayload.ID)) {
 			ClientPlayNetworking.send(new StatUpgradeRequestPayload(stat.id().value()));
 		}
+	}
+
+	private boolean isMouseOverRow(int mouseX, int mouseY, int left, int y) {
+		return mouseX >= left - 6
+				&& mouseX <= left + PANEL_WIDTH + 6
+				&& mouseY >= y - 4
+				&& mouseY <= y + ROW_HEIGHT - 4;
 	}
 
 	private int rowStartY() {

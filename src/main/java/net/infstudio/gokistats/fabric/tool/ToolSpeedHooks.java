@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public final class ToolSpeedHooks {
 	private static final List<ToolSpeedStat> TOOL_SPEED_STATS = List.of(
-			new ToolSpeedStat(KossmanStatDefinitions.MINING, KossmanTags.MINING_TOOLS, StatFormulas::legacyToolSpeedBonus),
-			new ToolSpeedStat(KossmanStatDefinitions.DIGGING, KossmanTags.DIGGING_TOOLS, StatFormulas::legacyToolSpeedBonus),
-			new ToolSpeedStat(KossmanStatDefinitions.CHOPPING, KossmanTags.CHOPPING_TOOLS, StatFormulas::legacyToolSpeedBonus),
-			new ToolSpeedStat(KossmanStatDefinitions.TRIMMING, KossmanTags.TRIMMING_TOOLS, StatFormulas::trimmingToolSpeedBonus)
+			new ToolSpeedStat(KossmanStatDefinitions.MINING, KossmanTags.MINING_TOOLS, StatFormulas::toolSpeedBonus),
+			new ToolSpeedStat(KossmanStatDefinitions.DIGGING, KossmanTags.DIGGING_TOOLS, StatFormulas::toolSpeedBonus),
+			new ToolSpeedStat(KossmanStatDefinitions.CHOPPING, KossmanTags.CHOPPING_TOOLS, StatFormulas::toolSpeedBonus),
+			new ToolSpeedStat(KossmanStatDefinitions.TRIMMING, KossmanTags.TRIMMING_TOOLS, StatFormulas::toolSpeedBonus)
 	);
 
 	private ToolSpeedHooks() {
