@@ -1,4 +1,10 @@
 {
+  "key.categories.gokistats": "Kossman Stats",
+  "key.categories.gokistats.controls": "Kossman Stats",
+  "key.gokistats.open_stats": "Open Stats",
+  "screen.gokistats.stats": "Kossman Stats",
+  "screen.gokistats.stats.close_hint": "Press Esc to close",
+  "screen.gokistats.stats.waiting": "Waiting for server data...",
   "tag.item.gokistats.mining": "Mining tools",
   "tag.item.gokistats.digging": "Digging tools",
   "tag.item.gokistats.chopping": "Chopping tools",

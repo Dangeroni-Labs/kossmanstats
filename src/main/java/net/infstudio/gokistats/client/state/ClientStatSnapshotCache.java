@@ -10,6 +10,7 @@ import net.infstudio.gokistats.core.snapshot.StatSnapshot;
 
 public final class ClientStatSnapshotCache {
 	private static StatSnapshot latest = StatSnapshot.EMPTY;
+	private static boolean receivedSnapshot;
 
 	private ClientStatSnapshotCache() {
 	}
@@ -22,6 +23,10 @@ public final class ClientStatSnapshotCache {
 		return latest.level(stat.id());
 	}
 
+	public static boolean hasSnapshot() {
+		return receivedSnapshot;
+	}
+
 	public static void replace(StatSnapshot snapshot) {
 		Map<StatId, Integer> knownLevels = new LinkedHashMap<>();
 
@@ -32,6 +37,7 @@ public final class ClientStatSnapshotCache {
 		}
 
 		latest = new StatSnapshot(knownLevels);
+		receivedSnapshot = true;
 		KossmanStats.LOGGER.info("Received stat snapshot with {} known stat levels.", latest.levels().size());
 	}
 }
