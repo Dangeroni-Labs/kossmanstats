@@ -1,54 +1,29 @@
-# GokiStats
+# Kossman Stats
 
-[![Build Status](https://travis-ci.org/InfinityStudio/GokiStats.svg?branch=1.15.2)](https://travis-ci.org/InfinityStudio/GokiStats)
-![](https://img.shields.io/github/downloads/InfinityStudio/GokiStats/total.svg)
-[![CurseForge](http://cf.way2muchnoise.eu/298141.svg)](https://minecraft.curseforge.com/projects/gokistats)
-[![Gitter](https://badges.gitter.im/InfinityStudio/GokiStats.svg)](https://gitter.im/InfinityStudio/GokiStats?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+**GokiStats Reforged** — a modern continuation and rework of [InfinityStudio/GokiStats](https://github.com/InfinityStudio/GokiStats).
 
-[![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_large.png)](https://www.ej-technologies.com/products/jprofiler/overview.html)
+I originally wanted to port GokiStats to modern Minecraft versions, but the project is gradually becoming more than a direct port: legacy systems are being rewritten, architecture is being modernized, and some stats and mechanics may be rebalanced, extended, or replaced.
 
-GokiStats is a skill improvement mod for Minecraft, it has been well-known before 1.7.10 but it has stopped developing for years.
+## Targets
 
-Feel free to solve any issue with crash-report in GitHub Issues.
+* Minecraft 26.2 - Fabric
+* Minecraft 26.2 - NeoForge <sub>(planned)</sub>
+* Minecraft 1.20.1 - Fabric/Forge <sub>(later target)</sub>
 
-Forum thread on [Mcbbs](http://www.mcbbs.net/thread-805910-1-1.html)
+## Status
 
-## Configuration
+Currently under active development.
 
-Since GokiStats 1.4.0, GokiStats is highly configurable through Minecraft datapack system.
+The first focus is restoring the original core progression and stats on Fabric before rebuilding the GUI and more complex mechanics.
 
-Stats for tool speed and attack damage depends on specific tag. They are:
+## Credits
 
-Bowsmanship(Bows): `gokistats:bow`
-
-Chopping(Axes): `gokistats:chopping`
-
-Digging(Shovels): `gokistats:digging`
-
-Mining(Pickaxes): `gokistats:mining`
-
-Swordsmanship(Swords): `gokistats:sword`
-
-Trimming(Shears): `minecraft:shears`
-
-Mining Magician Ores can be added to `gokistats:magician_ore` block tag and its output can be modified through `gokistats:magician_item` item tag.
-
-Treasure Finder are totally rewritten to loot tables. Now you can modify or create loot tables with a name pattern `<mod>:treasure_finder/<block>`, like `minecraft:treasure_finder/dirt`, the mod will detect it and consider it as a treasure finder loot table.
-
-Other stat configuration can be easily altered per-world in `serverconfig`.
-
-## Why Furnace Finesse is disabled?
-
-Because it drops TPS heavily.
-
-## Screenshots
-
-![2018-07-14_19.43.42.png](https://i.loli.net/2018/07/14/5b49e762d2305.png)
+Based on the original [GokiStats](https://github.com/InfinityStudio/GokiStats) by InfinityStudio.
 
 ## License
 
-Source code are under GPL-3.0 License, and resources are under CC-BY-NC-SA 4.0 License.
+GPL-3.0
 
-## Donation
+##### developer
 
-[![Become a Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bePatron?u=10845019)
+<sub>[Modrinth profile](https://modrinth.com/user/dangeroni) ₓ [CurseForge profile](https://www.curseforge.com/members/dangeroni/projects) ₓ [Github profile](https://github.com/stkossman) ₓ [Github organization](https://github.com/Dangeroni-Labs)</sub>
