@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "gokistats",
+  "version": "${version}",
+  "name": "GokiStats",
+  "description": "A modern Fabric continuation of GokiStats.",
+  "authors": [
+    "InfinityStudio",
+    "Lasm Gratel"
+  ],
+  "contact": {
+    "homepage": "https://github.com/InfinityStudio/GokiStats",
+    "sources": "https://github.com/InfinityStudio/GokiStats"
+  },
+  "license": "GPL-3.0-only",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.infstudio.gokistats.GokiStats"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

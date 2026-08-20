@@ -1,7 +1,6 @@
 {
-    "pack": {
-        "description": "GokiStats Assets",
-        "pack_format": 6,
-        "_comment": "Assets included in gokistats Mod."
-    }
+  "pack": {
+    "pack_format": 88,
+    "description": "GokiStats assets"
+  }
 }
