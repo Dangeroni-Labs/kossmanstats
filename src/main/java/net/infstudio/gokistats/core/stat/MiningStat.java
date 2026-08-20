@@ -1,9 +1,6 @@
-package net.infstudio.gokistats.core;
+package net.infstudio.gokistats.core.stat;
 
 public final class MiningStat {
-	public static final String ID = "gokistats:mining";
-	public static final int MAX_LEVEL = 25;
-
 	private MiningStat() {
 	}
 

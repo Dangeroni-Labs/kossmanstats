@@ -1,4 +1,4 @@
-package net.infstudio.gokistats.core;
+package net.infstudio.gokistats.core.progression;
 
 public final class StatProgression {
 	private StatProgression() {

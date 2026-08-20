@@ -2,6 +2,7 @@ package net.infstudio.gokistats;
 
 import net.fabricmc.api.ModInitializer;
 import net.infstudio.gokistats.fabric.command.GokiStatsCommands;
+import net.infstudio.gokistats.fabric.health.HealthAttributeHandler;
 import net.infstudio.gokistats.fabric.state.GokiPlayerStateStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ public final class GokiStats implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		GokiPlayerStateStorage.register();
+		HealthAttributeHandler.register();
 		GokiStatsCommands.register();
 		LOGGER.info("GokiStats initialized.");
 	}

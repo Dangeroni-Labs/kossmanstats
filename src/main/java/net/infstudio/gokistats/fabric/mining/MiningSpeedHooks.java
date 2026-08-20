@@ -1,6 +1,6 @@
 package net.infstudio.gokistats.fabric.mining;
 
-import net.infstudio.gokistats.core.MiningStat;
+import net.infstudio.gokistats.core.stat.MiningStat;
 import net.infstudio.gokistats.fabric.GokiTags;
 import net.infstudio.gokistats.fabric.state.GokiPlayerStateStorage;
 import net.minecraft.server.level.ServerPlayer;

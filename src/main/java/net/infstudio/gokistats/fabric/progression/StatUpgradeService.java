@@ -1,0 +1,48 @@
+package net.infstudio.gokistats.fabric.progression;
+
+import net.infstudio.gokistats.core.definition.StatDefinition;
+import net.infstudio.gokistats.core.progression.StatProgression;
+import net.infstudio.gokistats.core.result.UpgradeResult;
+import net.infstudio.gokistats.fabric.state.GokiPlayerStateStorage;
+import net.minecraft.server.level.ServerPlayer;
+
+public final class StatUpgradeService {
+	private StatUpgradeService() {
+	}
+
+	public static int nextUpgradeCost(ServerPlayer player, StatDefinition stat) {
+		return StatProgression.upgradeCostForLevel(GokiPlayerStateStorage.getLevel(player, stat));
+	}
+
+	public static UpgradeResult upgrade(ServerPlayer player, StatDefinition stat) {
+		int level = GokiPlayerStateStorage.getLevel(player, stat);
+		int cost = StatProgression.upgradeCostForLevel(level);
+
+		if (level >= stat.maxLevel()) {
+			return UpgradeResult.failure(level, cost, stat.displayName() + " is already at max level " + stat.maxLevel() + ".");
+		}
+
+		if (totalExperience(player) < cost) {
+			return UpgradeResult.failure(level, cost, "Not enough XP. Need " + cost + " XP.");
+		}
+
+		player.giveExperiencePoints(-cost);
+		GokiPlayerStateStorage.incrementLevel(player, stat);
+
+		return UpgradeResult.success(stat, level + 1, cost);
+	}
+
+	private static int totalExperience(ServerPlayer player) {
+		int level = player.experienceLevel;
+
+		if (level >= 0 && level <= 15) {
+			return (int) Math.round(Math.pow(level, 2) + 6 * level);
+		}
+
+		if (level <= 30) {
+			return (int) Math.round(2.5D * Math.pow(level, 2) - 40.5D * level + 360.0D);
+		}
+
+		return (int) Math.round(4.5D * Math.pow(level, 2) - 162.5D * level + 2220.0D);
+	}
+}
