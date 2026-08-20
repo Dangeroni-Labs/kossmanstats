@@ -4,16 +4,16 @@ import static net.minecraft.commands.Commands.literal;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.infstudio.gokistats.core.definition.GokiStatsDefinitions;
+import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.fabric.StatEffects;
 import net.infstudio.gokistats.fabric.progression.StatUpgradeService;
-import net.infstudio.gokistats.fabric.state.GokiPlayerStateStorage;
+import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
-public final class GokiStatsCommands {
-	private GokiStatsCommands() {
+public final class KossmanStatsCommands {
+	private KossmanStatsCommands() {
 	}
 
 	public static void register() {
@@ -21,7 +21,7 @@ public final class GokiStatsCommands {
 			var get = literal("get");
 			var add = literal("add");
 
-			for (StatDefinition stat : GokiStatsDefinitions.ALL) {
+			for (StatDefinition stat : KossmanStatDefinitions.ALL) {
 				get.then(getCommand(stat));
 				add.then(addCommand(stat));
 			}
@@ -36,7 +36,7 @@ public final class GokiStatsCommands {
 		return literal(stat.commandName())
 				.executes(context -> {
 					var player = context.getSource().getPlayerOrException();
-					int level = GokiPlayerStateStorage.getLevel(player, stat);
+					int level = KossmanPlayerStateStorage.getLevel(player, stat);
 					int cost = StatUpgradeService.nextUpgradeCost(player, stat);
 
 					context.getSource().sendSuccess(

@@ -1,11 +1,11 @@
 package net.infstudio.gokistats.fabric.combat;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import net.infstudio.gokistats.core.definition.GokiStatsDefinitions;
+import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.stat.PugilismStat;
 import net.infstudio.gokistats.core.stat.SwordsmanshipStat;
-import net.infstudio.gokistats.fabric.GokiTags;
-import net.infstudio.gokistats.fabric.state.GokiPlayerStateStorage;
+import net.infstudio.gokistats.fabric.KossmanTags;
+import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -37,11 +37,11 @@ public final class CombatDamageHooks {
 	}
 
 	private static double swordsmanshipBonus(ServerPlayer player, ItemStack stack) {
-		if (stack.isEmpty() || !stack.is(GokiTags.SWORDS)) {
+		if (stack.isEmpty() || !stack.is(KossmanTags.SWORDS)) {
 			return 0.0D;
 		}
 
-		return SwordsmanshipStat.bonusForLevel(GokiPlayerStateStorage.getLevel(player, GokiStatsDefinitions.SWORDSMANSHIP));
+		return SwordsmanshipStat.bonusForLevel(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.SWORDSMANSHIP));
 	}
 
 	private static double pugilismBonus(ServerPlayer player, ItemStack stack) {
@@ -49,7 +49,7 @@ public final class CombatDamageHooks {
 			return 0.0D;
 		}
 
-		return PugilismStat.bonusForLevel(GokiPlayerStateStorage.getLevel(player, GokiStatsDefinitions.PUGILISM));
+		return PugilismStat.bonusForLevel(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.PUGILISM));
 	}
 
 	private static boolean hasMainHandAttackDamageModifier(ItemStack stack) {

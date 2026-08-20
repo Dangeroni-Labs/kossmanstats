@@ -1,8 +1,8 @@
 # Kossman Stats
 
-**GokiStats Reforged** — a modern continuation and rework of [InfinityStudio/GokiStats](https://github.com/InfinityStudio/GokiStats).
+**Kossman Stats** - a modern continuation and rework of [InfinityStudio/GokiStats](https://github.com/InfinityStudio/GokiStats).
 
-I originally wanted to port GokiStats to modern Minecraft versions, but the project is gradually becoming more than a direct port: legacy systems are being rewritten, architecture is being modernized, and some stats and mechanics may be rebalanced, extended, or replaced.
+This project started as a port of GokiStats to modern Minecraft versions, but it is becoming more than a direct port: legacy systems are being rewritten, architecture is being modernized, and some stats and mechanics may be rebalanced, extended, or replaced.
 
 ## Targets
 
@@ -19,6 +19,8 @@ The first focus is restoring the original core progression and stats on Fabric b
 ## Credits
 
 Based on the original [GokiStats](https://github.com/InfinityStudio/GokiStats) by InfinityStudio.
+
+Active continuation: [Dangeroni-Labs/kossmanstats](https://github.com/Dangeroni-Labs/kossmanstats).
 
 ## License
 

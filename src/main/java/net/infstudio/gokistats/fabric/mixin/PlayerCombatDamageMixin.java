@@ -17,7 +17,7 @@ public abstract class PlayerCombatDamageMixin {
 			),
 			index = 1
 	)
-	private float gokistats$applyCombatDamageBonus(float damage) {
+	private float kossmanstats$applyCombatDamageBonus(float damage) {
 		if ((Object) this instanceof ServerPlayer player) {
 			return CombatDamageHooks.applyMeleeDamageBonus(player, damage);
 		}

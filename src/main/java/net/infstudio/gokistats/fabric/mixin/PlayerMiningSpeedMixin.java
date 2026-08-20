@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Player.class)
 public abstract class PlayerMiningSpeedMixin {
 	@Inject(method = "getDestroySpeed", at = @At("RETURN"), cancellable = true)
-	private void gokistats$applyMiningSpeed(BlockState blockState, CallbackInfoReturnable<Float> cir) {
+	private void kossmanstats$applyMiningSpeed(BlockState blockState, CallbackInfoReturnable<Float> cir) {
 		if ((Object) this instanceof ServerPlayer player) {
 			cir.setReturnValue(ToolSpeedHooks.applyToolSpeedBonus(player, blockState, cir.getReturnValueF()));
 		}

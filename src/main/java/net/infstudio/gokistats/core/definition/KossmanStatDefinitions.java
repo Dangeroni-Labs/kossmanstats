@@ -3,7 +3,7 @@ package net.infstudio.gokistats.core.definition;
 import java.util.List;
 import java.util.Optional;
 
-public final class GokiStatsDefinitions {
+public final class KossmanStatDefinitions {
 	public static final StatDefinition MINING = new StatDefinition(
 			new StatId("gokistats:mining"),
 			"mining",
@@ -63,7 +63,7 @@ public final class GokiStatsDefinitions {
 			PUGILISM
 	);
 
-	private GokiStatsDefinitions() {
+	private KossmanStatDefinitions() {
 	}
 
 	public static Optional<StatDefinition> byCommandName(String commandName) {

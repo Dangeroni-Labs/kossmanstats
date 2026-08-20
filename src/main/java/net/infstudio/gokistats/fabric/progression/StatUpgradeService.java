@@ -3,7 +3,7 @@ package net.infstudio.gokistats.fabric.progression;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.progression.StatProgression;
 import net.infstudio.gokistats.core.result.UpgradeResult;
-import net.infstudio.gokistats.fabric.state.GokiPlayerStateStorage;
+import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.minecraft.server.level.ServerPlayer;
 
 public final class StatUpgradeService {
@@ -11,11 +11,11 @@ public final class StatUpgradeService {
 	}
 
 	public static int nextUpgradeCost(ServerPlayer player, StatDefinition stat) {
-		return StatProgression.upgradeCostForLevel(GokiPlayerStateStorage.getLevel(player, stat));
+		return StatProgression.upgradeCostForLevel(KossmanPlayerStateStorage.getLevel(player, stat));
 	}
 
 	public static UpgradeResult upgrade(ServerPlayer player, StatDefinition stat) {
-		int level = GokiPlayerStateStorage.getLevel(player, stat);
+		int level = KossmanPlayerStateStorage.getLevel(player, stat);
 		int cost = StatProgression.upgradeCostForLevel(level);
 
 		if (level >= stat.maxLevel()) {
@@ -27,7 +27,7 @@ public final class StatUpgradeService {
 		}
 
 		player.giveExperiencePoints(-cost);
-		GokiPlayerStateStorage.incrementLevel(player, stat);
+		KossmanPlayerStateStorage.incrementLevel(player, stat);
 
 		return UpgradeResult.success(stat, level + 1, cost);
 	}

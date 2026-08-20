@@ -2,22 +2,26 @@
   "schemaVersion": 1,
   "id": "gokistats",
   "version": "${version}",
-  "name": "GokiStats",
-  "description": "A modern Fabric continuation of GokiStats.",
+  "name": "Kossman Stats",
+  "description": "A modern Fabric continuation of the original GokiStats progression mod.",
   "authors": [
+    "Dangeroni Labs"
+  ],
+  "contributors": [
     "InfinityStudio",
     "Lasm Gratel"
   ],
   "contact": {
-    "homepage": "https://github.com/InfinityStudio/GokiStats",
-    "sources": "https://github.com/InfinityStudio/GokiStats"
+    "homepage": "https://github.com/Dangeroni-Labs/kossmanstats",
+    "sources": "https://github.com/Dangeroni-Labs/kossmanstats",
+    "issues": "https://github.com/Dangeroni-Labs/kossmanstats/issues"
   },
   "license": "GPL-3.0-only",
   "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.infstudio.gokistats.GokiStats"
+      "net.infstudio.gokistats.KossmanStats"
     ]
   },
   "mixins": [

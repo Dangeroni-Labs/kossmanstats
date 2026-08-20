@@ -2,10 +2,10 @@ package net.infstudio.gokistats.fabric.health;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.infstudio.gokistats.GokiStats;
-import net.infstudio.gokistats.core.definition.GokiStatsDefinitions;
+import net.infstudio.gokistats.KossmanStats;
+import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.stat.HealthStat;
-import net.infstudio.gokistats.fabric.state.GokiPlayerStateStorage;
+import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -13,7 +13,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public final class HealthAttributeHandler {
 	private static final Identifier MAX_HEALTH_MODIFIER_ID = Identifier.fromNamespaceAndPath(
-			GokiStats.MOD_ID,
+			KossmanStats.MOD_ID,
 			"health_stat_max_health"
 	);
 
@@ -31,7 +31,7 @@ public final class HealthAttributeHandler {
 			return;
 		}
 
-		int level = GokiPlayerStateStorage.getLevel(player, GokiStatsDefinitions.HEALTH);
+		int level = KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.HEALTH);
 		double bonus = HealthStat.maxHealthBonusForLevel(level);
 
 		if (bonus <= 0.0D) {

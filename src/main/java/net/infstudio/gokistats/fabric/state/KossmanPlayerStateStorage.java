@@ -3,15 +3,15 @@ package net.infstudio.gokistats.fabric.state;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.infstudio.gokistats.GokiStats;
-import net.infstudio.gokistats.core.definition.GokiStatsDefinitions;
+import net.infstudio.gokistats.KossmanStats;
+import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
-public final class GokiPlayerStateStorage {
+public final class KossmanPlayerStateStorage {
 	private static final AttachmentType<Integer> MINING_LEVEL_ATTACHMENT = AttachmentRegistry.create(
-			attachmentId(GokiStatsDefinitions.MINING),
+			attachmentId(KossmanStatDefinitions.MINING),
 			builder -> builder
 					.initializer(() -> 0)
 					.persistent(Codec.INT)
@@ -19,7 +19,7 @@ public final class GokiPlayerStateStorage {
 	);
 
 	private static final AttachmentType<Integer> HEALTH_LEVEL_ATTACHMENT = AttachmentRegistry.create(
-			attachmentId(GokiStatsDefinitions.HEALTH),
+			attachmentId(KossmanStatDefinitions.HEALTH),
 			builder -> builder
 					.initializer(() -> 0)
 					.persistent(Codec.INT)
@@ -27,7 +27,7 @@ public final class GokiPlayerStateStorage {
 	);
 
 	private static final AttachmentType<Integer> DIGGING_LEVEL_ATTACHMENT = AttachmentRegistry.create(
-			attachmentId(GokiStatsDefinitions.DIGGING),
+			attachmentId(KossmanStatDefinitions.DIGGING),
 			builder -> builder
 					.initializer(() -> 0)
 					.persistent(Codec.INT)
@@ -35,7 +35,7 @@ public final class GokiPlayerStateStorage {
 	);
 
 	private static final AttachmentType<Integer> CHOPPING_LEVEL_ATTACHMENT = AttachmentRegistry.create(
-			attachmentId(GokiStatsDefinitions.CHOPPING),
+			attachmentId(KossmanStatDefinitions.CHOPPING),
 			builder -> builder
 					.initializer(() -> 0)
 					.persistent(Codec.INT)
@@ -43,7 +43,7 @@ public final class GokiPlayerStateStorage {
 	);
 
 	private static final AttachmentType<Integer> TRIMMING_LEVEL_ATTACHMENT = AttachmentRegistry.create(
-			attachmentId(GokiStatsDefinitions.TRIMMING),
+			attachmentId(KossmanStatDefinitions.TRIMMING),
 			builder -> builder
 					.initializer(() -> 0)
 					.persistent(Codec.INT)
@@ -51,7 +51,7 @@ public final class GokiPlayerStateStorage {
 	);
 
 	private static final AttachmentType<Integer> SWORDSMANSHIP_LEVEL_ATTACHMENT = AttachmentRegistry.create(
-			attachmentId(GokiStatsDefinitions.SWORDSMANSHIP),
+			attachmentId(KossmanStatDefinitions.SWORDSMANSHIP),
 			builder -> builder
 					.initializer(() -> 0)
 					.persistent(Codec.INT)
@@ -59,14 +59,14 @@ public final class GokiPlayerStateStorage {
 	);
 
 	private static final AttachmentType<Integer> PUGILISM_LEVEL_ATTACHMENT = AttachmentRegistry.create(
-			attachmentId(GokiStatsDefinitions.PUGILISM),
+			attachmentId(KossmanStatDefinitions.PUGILISM),
 			builder -> builder
 					.initializer(() -> 0)
 					.persistent(Codec.INT)
 					.copyOnDeath()
 	);
 
-	private GokiPlayerStateStorage() {
+	private KossmanPlayerStateStorage() {
 	}
 
 	public static void register() {
@@ -74,7 +74,7 @@ public final class GokiPlayerStateStorage {
 	}
 
 	public static int getMiningLevel(ServerPlayer player) {
-		return getLevel(player, GokiStatsDefinitions.MINING);
+		return getLevel(player, KossmanStatDefinitions.MINING);
 	}
 
 	public static int getLevel(ServerPlayer player, StatDefinition stat) {
@@ -82,7 +82,7 @@ public final class GokiPlayerStateStorage {
 	}
 
 	public static void setMiningLevel(ServerPlayer player, int level) {
-		setLevel(player, GokiStatsDefinitions.MINING, level);
+		setLevel(player, KossmanStatDefinitions.MINING, level);
 	}
 
 	public static void setLevel(ServerPlayer player, StatDefinition stat, int level) {
@@ -90,7 +90,7 @@ public final class GokiPlayerStateStorage {
 	}
 
 	public static void incrementMiningLevel(ServerPlayer player) {
-		incrementLevel(player, GokiStatsDefinitions.MINING);
+		incrementLevel(player, KossmanStatDefinitions.MINING);
 	}
 
 	public static void incrementLevel(ServerPlayer player, StatDefinition stat) {
@@ -98,35 +98,35 @@ public final class GokiPlayerStateStorage {
 	}
 
 	private static Identifier attachmentId(StatDefinition stat) {
-		return Identifier.fromNamespaceAndPath(GokiStats.MOD_ID, stat.commandName() + "_level");
+		return Identifier.fromNamespaceAndPath(KossmanStats.MOD_ID, stat.commandName() + "_level");
 	}
 
 	private static AttachmentType<Integer> attachmentFor(StatDefinition stat) {
-		if (stat.equals(GokiStatsDefinitions.MINING)) {
+		if (stat.equals(KossmanStatDefinitions.MINING)) {
 			return MINING_LEVEL_ATTACHMENT;
 		}
 
-		if (stat.equals(GokiStatsDefinitions.HEALTH)) {
+		if (stat.equals(KossmanStatDefinitions.HEALTH)) {
 			return HEALTH_LEVEL_ATTACHMENT;
 		}
 
-		if (stat.equals(GokiStatsDefinitions.DIGGING)) {
+		if (stat.equals(KossmanStatDefinitions.DIGGING)) {
 			return DIGGING_LEVEL_ATTACHMENT;
 		}
 
-		if (stat.equals(GokiStatsDefinitions.CHOPPING)) {
+		if (stat.equals(KossmanStatDefinitions.CHOPPING)) {
 			return CHOPPING_LEVEL_ATTACHMENT;
 		}
 
-		if (stat.equals(GokiStatsDefinitions.TRIMMING)) {
+		if (stat.equals(KossmanStatDefinitions.TRIMMING)) {
 			return TRIMMING_LEVEL_ATTACHMENT;
 		}
 
-		if (stat.equals(GokiStatsDefinitions.SWORDSMANSHIP)) {
+		if (stat.equals(KossmanStatDefinitions.SWORDSMANSHIP)) {
 			return SWORDSMANSHIP_LEVEL_ATTACHMENT;
 		}
 
-		if (stat.equals(GokiStatsDefinitions.PUGILISM)) {
+		if (stat.equals(KossmanStatDefinitions.PUGILISM)) {
 			return PUGILISM_LEVEL_ATTACHMENT;
 		}
 
