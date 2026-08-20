@@ -1,6 +1,6 @@
 package net.infstudio.gokistats.fabric.mixin;
 
-import net.infstudio.gokistats.fabric.mining.MiningSpeedHooks;
+import net.infstudio.gokistats.fabric.tool.ToolSpeedHooks;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,7 +14,7 @@ public abstract class PlayerMiningSpeedMixin {
 	@Inject(method = "getDestroySpeed", at = @At("RETURN"), cancellable = true)
 	private void gokistats$applyMiningSpeed(BlockState blockState, CallbackInfoReturnable<Float> cir) {
 		if ((Object) this instanceof ServerPlayer player) {
-			cir.setReturnValue(MiningSpeedHooks.applyMiningBonus(player, blockState, cir.getReturnValueF()));
+			cir.setReturnValue(ToolSpeedHooks.applyToolSpeedBonus(player, blockState, cir.getReturnValueF()));
 		}
 	}
 }

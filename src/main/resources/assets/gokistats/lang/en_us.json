@@ -1,3 +1,6 @@
 {
-  "tag.item.gokistats.mining": "Mining tools"
+  "tag.item.gokistats.mining": "Mining tools",
+  "tag.item.gokistats.digging": "Digging tools",
+  "tag.item.gokistats.chopping": "Chopping tools",
+  "tag.item.gokistats.trimming": "Trimming tools"
 }

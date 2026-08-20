@@ -18,7 +18,28 @@ public final class GokiStatsDefinitions {
 			16
 	);
 
-	public static final List<StatDefinition> ALL = List.of(MINING, HEALTH);
+	public static final StatDefinition DIGGING = new StatDefinition(
+			new StatId("gokistats:digging"),
+			"digging",
+			"Digging",
+			25
+	);
+
+	public static final StatDefinition CHOPPING = new StatDefinition(
+			new StatId("gokistats:chopping"),
+			"chopping",
+			"Chopping",
+			25
+	);
+
+	public static final StatDefinition TRIMMING = new StatDefinition(
+			new StatId("gokistats:trimming"),
+			"trimming",
+			"Trimming",
+			25
+	);
+
+	public static final List<StatDefinition> ALL = List.of(MINING, HEALTH, DIGGING, CHOPPING, TRIMMING);
 
 	private GokiStatsDefinitions() {
 	}

@@ -11,6 +11,18 @@ public final class GokiTags {
 			Registries.ITEM,
 			Identifier.fromNamespaceAndPath(GokiStats.MOD_ID, "mining")
 	);
+	public static final TagKey<Item> DIGGING_TOOLS = TagKey.create(
+			Registries.ITEM,
+			Identifier.fromNamespaceAndPath(GokiStats.MOD_ID, "digging")
+	);
+	public static final TagKey<Item> CHOPPING_TOOLS = TagKey.create(
+			Registries.ITEM,
+			Identifier.fromNamespaceAndPath(GokiStats.MOD_ID, "chopping")
+	);
+	public static final TagKey<Item> TRIMMING_TOOLS = TagKey.create(
+			Registries.ITEM,
+			Identifier.fromNamespaceAndPath(GokiStats.MOD_ID, "trimming")
+	);
 
 	private GokiTags() {
 	}

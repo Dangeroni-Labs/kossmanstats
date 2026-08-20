@@ -17,15 +17,19 @@ public final class GokiStatsCommands {
 	}
 
 	public static void register() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
-				literal("gokistats")
-						.then(literal("get")
-								.then(getCommand(GokiStatsDefinitions.MINING))
-								.then(getCommand(GokiStatsDefinitions.HEALTH)))
-						.then(literal("add")
-								.then(addCommand(GokiStatsDefinitions.MINING))
-								.then(addCommand(GokiStatsDefinitions.HEALTH)))
-		));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			var get = literal("get");
+			var add = literal("add");
+
+			for (StatDefinition stat : GokiStatsDefinitions.ALL) {
+				get.then(getCommand(stat));
+				add.then(addCommand(stat));
+			}
+
+			dispatcher.register(literal("gokistats")
+					.then(get)
+					.then(add));
+		});
 	}
 
 	private static LiteralArgumentBuilder<CommandSourceStack> getCommand(StatDefinition stat) {

@@ -26,6 +26,30 @@ public final class GokiPlayerStateStorage {
 					.copyOnDeath()
 	);
 
+	private static final AttachmentType<Integer> DIGGING_LEVEL_ATTACHMENT = AttachmentRegistry.create(
+			attachmentId(GokiStatsDefinitions.DIGGING),
+			builder -> builder
+					.initializer(() -> 0)
+					.persistent(Codec.INT)
+					.copyOnDeath()
+	);
+
+	private static final AttachmentType<Integer> CHOPPING_LEVEL_ATTACHMENT = AttachmentRegistry.create(
+			attachmentId(GokiStatsDefinitions.CHOPPING),
+			builder -> builder
+					.initializer(() -> 0)
+					.persistent(Codec.INT)
+					.copyOnDeath()
+	);
+
+	private static final AttachmentType<Integer> TRIMMING_LEVEL_ATTACHMENT = AttachmentRegistry.create(
+			attachmentId(GokiStatsDefinitions.TRIMMING),
+			builder -> builder
+					.initializer(() -> 0)
+					.persistent(Codec.INT)
+					.copyOnDeath()
+	);
+
 	private GokiPlayerStateStorage() {
 	}
 
@@ -68,6 +92,18 @@ public final class GokiPlayerStateStorage {
 
 		if (stat.equals(GokiStatsDefinitions.HEALTH)) {
 			return HEALTH_LEVEL_ATTACHMENT;
+		}
+
+		if (stat.equals(GokiStatsDefinitions.DIGGING)) {
+			return DIGGING_LEVEL_ATTACHMENT;
+		}
+
+		if (stat.equals(GokiStatsDefinitions.CHOPPING)) {
+			return CHOPPING_LEVEL_ATTACHMENT;
+		}
+
+		if (stat.equals(GokiStatsDefinitions.TRIMMING)) {
+			return TRIMMING_LEVEL_ATTACHMENT;
 		}
 
 		throw new IllegalArgumentException("Unsupported stat: " + stat.id().value());
