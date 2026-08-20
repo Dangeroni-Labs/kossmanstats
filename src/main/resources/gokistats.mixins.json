@@ -3,7 +3,8 @@
   "package": "net.infstudio.gokistats.fabric.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "PlayerMiningSpeedMixin"
+    "PlayerMiningSpeedMixin",
+    "PlayerCombatDamageMixin"
   ],
   "injectors": {
     "defaultRequire": 1

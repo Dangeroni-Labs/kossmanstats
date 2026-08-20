@@ -23,6 +23,10 @@ public final class GokiTags {
 			Registries.ITEM,
 			Identifier.fromNamespaceAndPath(GokiStats.MOD_ID, "trimming")
 	);
+	public static final TagKey<Item> SWORDS = TagKey.create(
+			Registries.ITEM,
+			Identifier.fromNamespaceAndPath(GokiStats.MOD_ID, "sword")
+	);
 
 	private GokiTags() {
 	}

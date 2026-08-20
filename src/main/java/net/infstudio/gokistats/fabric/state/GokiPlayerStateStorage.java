@@ -50,6 +50,22 @@ public final class GokiPlayerStateStorage {
 					.copyOnDeath()
 	);
 
+	private static final AttachmentType<Integer> SWORDSMANSHIP_LEVEL_ATTACHMENT = AttachmentRegistry.create(
+			attachmentId(GokiStatsDefinitions.SWORDSMANSHIP),
+			builder -> builder
+					.initializer(() -> 0)
+					.persistent(Codec.INT)
+					.copyOnDeath()
+	);
+
+	private static final AttachmentType<Integer> PUGILISM_LEVEL_ATTACHMENT = AttachmentRegistry.create(
+			attachmentId(GokiStatsDefinitions.PUGILISM),
+			builder -> builder
+					.initializer(() -> 0)
+					.persistent(Codec.INT)
+					.copyOnDeath()
+	);
+
 	private GokiPlayerStateStorage() {
 	}
 
@@ -104,6 +120,14 @@ public final class GokiPlayerStateStorage {
 
 		if (stat.equals(GokiStatsDefinitions.TRIMMING)) {
 			return TRIMMING_LEVEL_ATTACHMENT;
+		}
+
+		if (stat.equals(GokiStatsDefinitions.SWORDSMANSHIP)) {
+			return SWORDSMANSHIP_LEVEL_ATTACHMENT;
+		}
+
+		if (stat.equals(GokiStatsDefinitions.PUGILISM)) {
+			return PUGILISM_LEVEL_ATTACHMENT;
 		}
 
 		throw new IllegalArgumentException("Unsupported stat: " + stat.id().value());

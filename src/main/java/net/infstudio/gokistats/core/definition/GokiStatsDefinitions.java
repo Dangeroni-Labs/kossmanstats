@@ -39,7 +39,29 @@ public final class GokiStatsDefinitions {
 			25
 	);
 
-	public static final List<StatDefinition> ALL = List.of(MINING, HEALTH, DIGGING, CHOPPING, TRIMMING);
+	public static final StatDefinition SWORDSMANSHIP = new StatDefinition(
+			new StatId("gokistats:swordsmanship"),
+			"swordsmanship",
+			"Swordsmanship",
+			25
+	);
+
+	public static final StatDefinition PUGILISM = new StatDefinition(
+			new StatId("gokistats:pugilism"),
+			"pugilism",
+			"Pugilism",
+			25
+	);
+
+	public static final List<StatDefinition> ALL = List.of(
+			MINING,
+			HEALTH,
+			DIGGING,
+			CHOPPING,
+			TRIMMING,
+			SWORDSMANSHIP,
+			PUGILISM
+	);
 
 	private GokiStatsDefinitions() {
 	}
