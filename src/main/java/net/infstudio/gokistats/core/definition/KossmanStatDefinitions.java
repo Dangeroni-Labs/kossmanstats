@@ -1,7 +1,9 @@
 package net.infstudio.gokistats.core.definition;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class KossmanStatDefinitions {
 	public static final StatDefinition MINING = new StatDefinition(
@@ -62,13 +64,13 @@ public final class KossmanStatDefinitions {
 			SWORDSMANSHIP,
 			PUGILISM
 	);
+	private static final Map<String, StatDefinition> BY_COMMAND_NAME = ALL.stream()
+			.collect(Collectors.toUnmodifiableMap(StatDefinition::commandName, stat -> stat));
 
 	private KossmanStatDefinitions() {
 	}
 
 	public static Optional<StatDefinition> byCommandName(String commandName) {
-		return ALL.stream()
-				.filter(stat -> stat.commandName().equals(commandName))
-				.findFirst();
+		return Optional.ofNullable(BY_COMMAND_NAME.get(commandName));
 	}
 }

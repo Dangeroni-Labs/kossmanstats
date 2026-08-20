@@ -1,4 +1,4 @@
-package net.infstudio.gokistats.fabric;
+package net.infstudio.gokistats.fabric.effect;
 
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;

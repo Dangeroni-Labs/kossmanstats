@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.infstudio.gokistats.KossmanStats;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
-import net.infstudio.gokistats.core.stat.HealthStat;
+import net.infstudio.gokistats.core.formula.StatFormulas;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +32,7 @@ public final class HealthAttributeHandler {
 		}
 
 		int level = KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.HEALTH);
-		double bonus = HealthStat.maxHealthBonusForLevel(level);
+		double bonus = StatFormulas.healthMaxHealthBonus(level);
 
 		if (bonus <= 0.0D) {
 			maxHealth.removeModifier(MAX_HEALTH_MODIFIER_ID);

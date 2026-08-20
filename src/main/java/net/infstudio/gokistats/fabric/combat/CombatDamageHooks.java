@@ -2,10 +2,9 @@ package net.infstudio.gokistats.fabric.combat;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
-import net.infstudio.gokistats.core.stat.PugilismStat;
-import net.infstudio.gokistats.core.stat.SwordsmanshipStat;
-import net.infstudio.gokistats.fabric.KossmanTags;
+import net.infstudio.gokistats.core.formula.StatFormulas;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
+import net.infstudio.gokistats.fabric.tag.KossmanTags;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -41,7 +40,7 @@ public final class CombatDamageHooks {
 			return 0.0D;
 		}
 
-		return SwordsmanshipStat.bonusForLevel(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.SWORDSMANSHIP));
+		return StatFormulas.swordsmanshipDamageBonus(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.SWORDSMANSHIP));
 	}
 
 	private static double pugilismBonus(ServerPlayer player, ItemStack stack) {
@@ -49,7 +48,7 @@ public final class CombatDamageHooks {
 			return 0.0D;
 		}
 
-		return PugilismStat.bonusForLevel(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.PUGILISM));
+		return StatFormulas.pugilismDamageBonus(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.PUGILISM));
 	}
 
 	private static boolean hasMainHandAttackDamageModifier(ItemStack stack) {

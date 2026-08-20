@@ -6,7 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
-import net.infstudio.gokistats.fabric.StatEffects;
+import net.infstudio.gokistats.fabric.effect.StatEffects;
 import net.infstudio.gokistats.fabric.progression.StatUpgradeService;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.minecraft.commands.CommandSourceStack;

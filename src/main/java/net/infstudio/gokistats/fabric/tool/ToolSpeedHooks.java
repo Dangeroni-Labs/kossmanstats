@@ -2,22 +2,19 @@ package net.infstudio.gokistats.fabric.tool;
 
 import java.util.List;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
-import net.infstudio.gokistats.core.stat.ChoppingStat;
-import net.infstudio.gokistats.core.stat.DiggingStat;
-import net.infstudio.gokistats.core.stat.MiningStat;
-import net.infstudio.gokistats.core.stat.TrimmingStat;
-import net.infstudio.gokistats.fabric.KossmanTags;
+import net.infstudio.gokistats.core.formula.StatFormulas;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
+import net.infstudio.gokistats.fabric.tag.KossmanTags;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class ToolSpeedHooks {
 	private static final List<ToolSpeedStat> TOOL_SPEED_STATS = List.of(
-			new ToolSpeedStat(KossmanStatDefinitions.MINING, KossmanTags.MINING_TOOLS, MiningStat::bonusForLevel),
-			new ToolSpeedStat(KossmanStatDefinitions.DIGGING, KossmanTags.DIGGING_TOOLS, DiggingStat::bonusForLevel),
-			new ToolSpeedStat(KossmanStatDefinitions.CHOPPING, KossmanTags.CHOPPING_TOOLS, ChoppingStat::bonusForLevel),
-			new ToolSpeedStat(KossmanStatDefinitions.TRIMMING, KossmanTags.TRIMMING_TOOLS, TrimmingStat::bonusForLevel)
+			new ToolSpeedStat(KossmanStatDefinitions.MINING, KossmanTags.MINING_TOOLS, StatFormulas::legacyToolSpeedBonus),
+			new ToolSpeedStat(KossmanStatDefinitions.DIGGING, KossmanTags.DIGGING_TOOLS, StatFormulas::legacyToolSpeedBonus),
+			new ToolSpeedStat(KossmanStatDefinitions.CHOPPING, KossmanTags.CHOPPING_TOOLS, StatFormulas::legacyToolSpeedBonus),
+			new ToolSpeedStat(KossmanStatDefinitions.TRIMMING, KossmanTags.TRIMMING_TOOLS, StatFormulas::trimmingToolSpeedBonus)
 	);
 
 	private ToolSpeedHooks() {
