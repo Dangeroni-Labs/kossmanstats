@@ -15,35 +15,44 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 public final class KossmanStatsScreen extends Screen {
-	private static final int PANEL_MAX_WIDTH = 520;
-	private static final int PANEL_MIN_WIDTH = 240;
+	private static final int PANEL_MAX_WIDTH = 760;
 	private static final int BUTTON_SIZE = 16;
-	private static final int ROW_HEIGHT = 30;
-	private static final int ROW_PADDING = 6;
+	private static final int ROW_HEIGHT = 32;
+	private static final int ROW_PADDING = 8;
 	private static final int ICON_TEXTURE_SIZE = 32;
 	private static final int ICON_RENDER_SIZE = 24;
-	private static final int PANEL_TOP = 28;
-	private static final int PANEL_BOTTOM_PADDING = 10;
-	private static final int PANEL_HORIZONTAL_PADDING = 14;
+	private static final int PANEL_TOP = 34;
+	private static final int PANEL_BOTTOM_PADDING = 12;
+	private static final int PANEL_HORIZONTAL_PADDING = 18;
 	private static final int PANEL_VERTICAL_PADDING = 12;
 	private static final int FOOTER_BOTTOM_MARGIN = 20;
 	private static final int FOOTER_GAP = 10;
 	private static final int BUTTON_GAP = 5;
-	private static final int COLUMN_GAP = 12;
+	private static final int COLUMN_GAP = 18;
+	private static final int ICON_NAME_GAP = 7;
+	private static final int LEVEL_WIDTH = 42;
+	private static final int XP_WIDTH = 62;
+	private static final int SCROLLBAR_WIDTH = 4;
+	private static final int SCROLLBAR_GUTTER = 10;
 	private static final int TITLE_COLOR = 0xFFFFFFFF;
 	private static final int TEXT_COLOR = 0xFFD8D8D8;
 	private static final int MUTED_COLOR = 0xFFA0A0A0;
 	private static final int PANEL_COLOR = 0xB0202020;
 	private static final int MISSING_ICON_BG = 0x80303030;
 	private static final int MISSING_ICON_BORDER = 0xFFA0A0A0;
+	private static final int SCROLLBAR_TRACK_COLOR = 0x50303030;
+	private static final int SCROLLBAR_THUMB_COLOR = 0xCCB8B8B8;
 	private final Map<StatDefinition, Button> downgradeButtons = new LinkedHashMap<>();
 	private final Map<StatDefinition, Button> upgradeButtons = new LinkedHashMap<>();
 	private int scrollOffset;
+	private boolean draggingScrollbar;
+	private int scrollbarDragOffset;
 
 	public KossmanStatsScreen() {
 		super(Component.translatable("screen.gokistats.stats"));
@@ -96,15 +105,16 @@ public final class KossmanStatsScreen extends Screen {
 		graphics.fill(left, PANEL_TOP, right, panelBottom, PANEL_COLOR);
 
 		int contentY = listTop + ROW_PADDING - scrollOffset;
-		graphics.enableScissor(left + PANEL_HORIZONTAL_PADDING, listTop, right - PANEL_HORIZONTAL_PADDING, listBottom);
+		graphics.enableScissor(listLeft(), listTop, listContentRight(), listBottom);
 		for (int index = 0; index < KossmanStatDefinitions.ALL.size(); index++) {
 			StatDefinition stat = KossmanStatDefinitions.ALL.get(index);
-			int rowY = contentY + (index * ROW_HEIGHT);
+			int rowY = contentY + (index / 2 * ROW_HEIGHT);
 			if (!isRowFullyVisible(rowY, listTop, listBottom)) {
 				continue;
 			}
 
-			renderStatRow(graphics, stat, left, rowY);
+			int columnLeft = columnLeft(index % 2);
+			renderStatEntry(graphics, stat, columnLeft, rowY);
 			if (isMouseOverButton(downgradeButtons.get(stat), mouseX, mouseY)) {
 				graphics.setComponentTooltipForNextFrame(
 						font,
@@ -112,7 +122,7 @@ public final class KossmanStatsScreen extends Screen {
 						mouseX,
 						mouseY
 				);
-			} else if (isMouseOverRow(mouseX, mouseY, left, rowY)) {
+			} else if (isMouseOverEntry(mouseX, mouseY, columnLeft, rowY)) {
 				graphics.setComponentTooltipForNextFrame(
 						font,
 						StatTooltipContent.forStat(stat, ClientStatSnapshotCache.level(stat)),
@@ -122,6 +132,7 @@ public final class KossmanStatsScreen extends Screen {
 			}
 		}
 		graphics.disableScissor();
+		renderScrollbar(graphics);
 
 		graphics.centeredText(
 				font,
@@ -133,16 +144,15 @@ public final class KossmanStatsScreen extends Screen {
 		super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 	}
 
-	private void renderStatRow(GuiGraphicsExtractor graphics, StatDefinition stat, int left, int y) {
+	private void renderStatEntry(GuiGraphicsExtractor graphics, StatDefinition stat, int left, int y) {
 		int level = ClientStatSnapshotCache.level(stat);
 		Component name = Component.literal(stat.displayName());
-		Component levelText = Component.literal("Level " + level);
-		Component nextText = Component.literal("Next: " + nextCostText(stat, level));
+		Component levelText = Component.literal("Lv. " + level);
+		Component nextText = Component.literal(nextCostText(stat, level));
 		int textY = centeredTextY(y);
 		int iconY = centeredIconY(y);
-		int iconX = iconX(left);
 
-		renderIcon(graphics, stat, level, iconX, iconY);
+		renderIcon(graphics, stat, level, left, iconY);
 		graphics.text(font, name, nameX(left), textY, TEXT_COLOR);
 		graphics.text(font, levelText, levelX(left), textY, TEXT_COLOR);
 		graphics.text(font, nextText, nextX(left), textY, MUTED_COLOR);
@@ -152,8 +162,6 @@ public final class KossmanStatsScreen extends Screen {
 		int left = panelLeft();
 		int listTop = listTopY();
 		int listBottom = listBottomY();
-		int buttonX = upgradeButtonX(left);
-		int downgradeX = buttonX - BUTTON_SIZE - BUTTON_GAP;
 		int contentY = listTop + ROW_PADDING - scrollOffset;
 
 		for (int index = 0; index < KossmanStatDefinitions.ALL.size(); index++) {
@@ -162,7 +170,10 @@ public final class KossmanStatsScreen extends Screen {
 			Button downgradeButton = downgradeButtons.get(stat);
 			Button upgradeButton = upgradeButtons.get(stat);
 			boolean enabled = KossmanBalance.current().isEnabled(stat);
-			int rowY = contentY + (index * ROW_HEIGHT);
+			int columnLeft = columnLeft(index % 2);
+			int buttonX = upgradeButtonX(columnLeft);
+			int downgradeX = buttonX - BUTTON_SIZE - BUTTON_GAP;
+			int rowY = contentY + (index / 2 * ROW_HEIGHT);
 			boolean visible = ClientStatSnapshotCache.hasSnapshot() && isRowFullyVisible(rowY, listTop, listBottom);
 			int buttonY = rowY + ((ROW_HEIGHT - BUTTON_SIZE) / 2);
 
@@ -189,9 +200,9 @@ public final class KossmanStatsScreen extends Screen {
 		}
 	}
 
-	private boolean isMouseOverRow(int mouseX, int mouseY, int left, int y) {
-		return mouseX >= left - 6
-				&& mouseX <= panelRight() + 6
+	private boolean isMouseOverEntry(int mouseX, int mouseY, int left, int y) {
+		return mouseX >= left
+				&& mouseX <= left + columnWidth()
 				&& mouseY >= y
 				&& mouseY <= y + ROW_HEIGHT;
 	}
@@ -211,7 +222,7 @@ public final class KossmanStatsScreen extends Screen {
 		}
 
 		if (level >= KossmanBalance.current().maxStatLevel()) {
-			return "max";
+			return "MAX";
 		}
 
 		return StatProgression.upgradeCostForLevel(level) + " XP";
@@ -283,8 +294,39 @@ public final class KossmanStatsScreen extends Screen {
 		return true;
 	}
 
+	@Override
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		if (maxScroll() > 0 && event.button() == 0 && isMouseOverScrollbar(event.x(), event.y())) {
+			draggingScrollbar = true;
+			scrollbarDragOffset = (int) event.y() - scrollbarThumbTop();
+			return true;
+		}
+
+		return super.mouseClicked(event, doubleClick);
+	}
+
+	@Override
+	public boolean mouseReleased(MouseButtonEvent event) {
+		if (draggingScrollbar) {
+			draggingScrollbar = false;
+			return true;
+		}
+
+		return super.mouseReleased(event);
+	}
+
+	@Override
+	public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+		if (draggingScrollbar) {
+			setScrollFromThumb((int) event.y() - scrollbarDragOffset);
+			return true;
+		}
+
+		return super.mouseDragged(event, dragX, dragY);
+	}
+
 	private int panelWidth() {
-		return Math.min(PANEL_MAX_WIDTH, Math.max(PANEL_MIN_WIDTH, width - 40));
+		return Math.min(PANEL_MAX_WIDTH, Math.max(240, width - 40));
 	}
 
 	private int panelLeft() {
@@ -325,7 +367,7 @@ public final class KossmanStatsScreen extends Screen {
 
 	private int maxScroll() {
 		int visibleRows = Math.max(1, ((listBottomY() - listTopY()) - (ROW_PADDING * 2)) / ROW_HEIGHT);
-		return Math.max(0, (KossmanStatDefinitions.ALL.size() - visibleRows) * ROW_HEIGHT);
+		return Math.max(0, (statVisualRows() - visibleRows) * ROW_HEIGHT);
 	}
 
 	private int clampScroll(int offset) {
@@ -333,20 +375,37 @@ public final class KossmanStatsScreen extends Screen {
 		return (clamped / ROW_HEIGHT) * ROW_HEIGHT;
 	}
 
-	private int iconX(int left) {
-		return left + PANEL_HORIZONTAL_PADDING;
+	private int statVisualRows() {
+		return (KossmanStatDefinitions.ALL.size() + 1) / 2;
+	}
+
+	private int listLeft() {
+		return panelLeft() + PANEL_HORIZONTAL_PADDING;
+	}
+
+	private int listContentRight() {
+		int right = panelRight() - PANEL_HORIZONTAL_PADDING;
+		return maxScroll() > 0 ? right - SCROLLBAR_GUTTER : right;
+	}
+
+	private int columnWidth() {
+		return Math.max(0, (listContentRight() - listLeft() - COLUMN_GAP) / 2);
+	}
+
+	private int columnLeft(int column) {
+		return listLeft() + (column * (columnWidth() + COLUMN_GAP));
 	}
 
 	private int nameX(int left) {
-		return iconX(left) + ICON_RENDER_SIZE + COLUMN_GAP;
+		return left + ICON_RENDER_SIZE + ICON_NAME_GAP;
 	}
 
 	private int levelX(int left) {
-		return nextX(left) - 96;
+		return nextX(left) - LEVEL_WIDTH;
 	}
 
 	private int nextX(int left) {
-		return downgradeButtonX(left) - 142;
+		return downgradeButtonX(left) - XP_WIDTH;
 	}
 
 	private int downgradeButtonX(int left) {
@@ -354,6 +413,52 @@ public final class KossmanStatsScreen extends Screen {
 	}
 
 	private int upgradeButtonX(int left) {
-		return left + panelWidth() - PANEL_HORIZONTAL_PADDING - BUTTON_SIZE;
+		return left + columnWidth() - BUTTON_SIZE;
+	}
+
+	private void renderScrollbar(GuiGraphicsExtractor graphics) {
+		if (maxScroll() <= 0) {
+			return;
+		}
+
+		int x = scrollbarX();
+		graphics.fill(x, listTopY(), x + SCROLLBAR_WIDTH, listBottomY(), SCROLLBAR_TRACK_COLOR);
+		graphics.fill(x, scrollbarThumbTop(), x + SCROLLBAR_WIDTH, scrollbarThumbBottom(), SCROLLBAR_THUMB_COLOR);
+	}
+
+	private boolean isMouseOverScrollbar(double mouseX, double mouseY) {
+		return mouseX >= scrollbarX()
+				&& mouseX <= scrollbarX() + SCROLLBAR_WIDTH
+				&& mouseY >= listTopY()
+				&& mouseY <= listBottomY();
+	}
+
+	private int scrollbarX() {
+		return panelRight() - PANEL_HORIZONTAL_PADDING - SCROLLBAR_WIDTH;
+	}
+
+	private int scrollbarThumbTop() {
+		int trackHeight = listBottomY() - listTopY();
+		int range = Math.max(1, maxScroll());
+		int thumbTravel = Math.max(0, trackHeight - scrollbarThumbHeight());
+		return listTopY() + ((scrollOffset * thumbTravel) / range);
+	}
+
+	private int scrollbarThumbBottom() {
+		return scrollbarThumbTop() + scrollbarThumbHeight();
+	}
+
+	private int scrollbarThumbHeight() {
+		int viewportHeight = Math.max(1, listBottomY() - listTopY());
+		int contentHeight = Math.max(viewportHeight, (statVisualRows() * ROW_HEIGHT) + (ROW_PADDING * 2));
+		return Math.max(20, (viewportHeight * viewportHeight) / contentHeight);
+	}
+
+	private void setScrollFromThumb(int thumbTop) {
+		int trackHeight = listBottomY() - listTopY();
+		int thumbTravel = Math.max(1, trackHeight - scrollbarThumbHeight());
+		int clampedThumbTop = Math.max(listTopY(), Math.min(thumbTop, listTopY() + thumbTravel));
+		scrollOffset = clampScroll(((clampedThumbTop - listTopY()) * maxScroll()) / thumbTravel);
+		updateButtonStatesAndLayout();
 	}
 }
