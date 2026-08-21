@@ -35,15 +35,15 @@ public final class IncomingDamageReductionHooks {
 		}
 
 		if (isLegacyFireOrLava(source)) {
-			return StatFormulas.specializedDamageReduction(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.TEMPERING));
+			return StatFormulas.temperingDamageReduction(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.TEMPERING));
 		}
 
 		if (source.is(DamageTypeTags.IS_EXPLOSION)) {
-			return StatFormulas.specializedDamageReduction(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.TOUGH_SKIN));
+			return StatFormulas.toughSkinDamageReduction(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.TOUGH_SKIN));
 		}
 
 		if (source.is(DamageTypes.FALL)) {
-			return StatFormulas.specializedDamageReduction(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.FEATHER_FALL));
+			return StatFormulas.featherFallDamageReduction(KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.FEATHER_FALL));
 		}
 
 		return 0.0D;

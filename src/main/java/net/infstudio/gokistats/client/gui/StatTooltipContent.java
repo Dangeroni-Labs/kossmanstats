@@ -45,11 +45,11 @@ final class StatTooltipContent {
 		}
 
 		if (stat.equals(KossmanStatDefinitions.TEMPERING)) {
-			return reductionTooltip(stat, level, "Reduces damage from fire and lava.", StatFormulas::specializedDamageReduction);
+			return reductionTooltip(stat, level, "Reduces damage from fire and lava.", StatFormulas::temperingDamageReduction);
 		}
 
 		if (stat.equals(KossmanStatDefinitions.TOUGH_SKIN)) {
-			return reductionTooltip(stat, level, "Reduces damage from explosions.", StatFormulas::specializedDamageReduction);
+			return reductionTooltip(stat, level, "Reduces damage from explosions.", StatFormulas::toughSkinDamageReduction);
 		}
 
 		if (stat.equals(KossmanStatDefinitions.FEATHER_FALL)) {
@@ -115,7 +115,7 @@ final class StatTooltipContent {
 			return List.of(
 					Component.literal(stat.displayName()),
 					Component.literal("Reduces fall damage and increases safe fall distance."),
-					Component.literal("Current: " + formatReduction(StatFormulas.specializedDamageReduction(level))),
+					Component.literal("Current: " + formatReduction(StatFormulas.featherFallDamageReduction(level))),
 					Component.literal("Safe distance: +" + formatNumber(StatFormulas.featherFallSafeDistanceBonus(level)) + " blocks"),
 					Component.literal("Next: max level")
 			);
@@ -124,8 +124,8 @@ final class StatTooltipContent {
 		return List.of(
 				Component.literal(stat.displayName()),
 				Component.literal("Reduces fall damage and increases safe fall distance."),
-				Component.literal("Current: " + formatReduction(StatFormulas.specializedDamageReduction(level))),
-				Component.literal("Next: " + formatReduction(StatFormulas.specializedDamageReduction(level + 1))),
+				Component.literal("Current: " + formatReduction(StatFormulas.featherFallDamageReduction(level))),
+				Component.literal("Next: " + formatReduction(StatFormulas.featherFallDamageReduction(level + 1))),
 				Component.literal("Safe distance: +" + formatNumber(StatFormulas.featherFallSafeDistanceBonus(level)) + " blocks")
 		);
 	}
