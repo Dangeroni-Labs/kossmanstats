@@ -36,6 +36,10 @@ final class StatTooltipContent {
 			return bonusTooltip(stat, level, "Increases melee damage while unarmed.", "damage", StatFormulas::pugilismDamageBonus, false);
 		}
 
+		if (stat.equals(KossmanStatDefinitions.BOWMANSHIP)) {
+			return bonusTooltip(stat, level, "Increases damage dealt by bow shots.", "bow damage", StatFormulas::bowmanshipDamageBonus, true);
+		}
+
 		if (stat.equals(KossmanStatDefinitions.HEALTH)) {
 			return bonusTooltip(stat, level, "Increases maximum health.", "HP", StatFormulas::healthMaxHealthBonus, false);
 		}
@@ -78,6 +82,14 @@ final class StatTooltipContent {
 
 		if (stat.equals(KossmanStatDefinitions.ROLL)) {
 			return rollTooltip(stat, level);
+		}
+
+		if (stat.equals(KossmanStatDefinitions.TREASURE_FINDER)) {
+			return chanceTooltip(stat, level, "Chance to find extra treasure from configured blocks.", StatFormulas::treasureFinderProcChance, "extra treasure proc chance");
+		}
+
+		if (stat.equals(KossmanStatDefinitions.MINING_MAGICIAN)) {
+			return chanceTooltip(stat, level, "Chance to conjure an extra configured reward from eligible ores.", StatFormulas::miningMagicianProcChance, "magician proc chance");
 		}
 
 		return List.of(
@@ -208,6 +220,30 @@ final class StatTooltipContent {
 				Component.literal("Chance to fully evade eligible direct attacks."),
 				Component.literal("Current: " + formatPercent(StatFormulas.rollEvadeChance(level)) + " evade chance"),
 				Component.literal("Next: " + formatPercent(StatFormulas.rollEvadeChance(level + 1)) + " evade chance")
+		);
+	}
+
+	private static List<Component> chanceTooltip(
+			StatDefinition stat,
+			int level,
+			String description,
+			LevelBonus chance,
+			String label
+	) {
+		if (level >= stat.maxLevel()) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal(description),
+					Component.literal("Current: " + formatPercent(chance.value(level)) + " " + label),
+					Component.literal("Next: max level")
+			);
+		}
+
+		return List.of(
+				Component.literal(stat.displayName()),
+				Component.literal(description),
+				Component.literal("Current: " + formatPercent(chance.value(level)) + " " + label),
+				Component.literal("Next: " + formatPercent(chance.value(level + 1)) + " " + label)
 		);
 	}
 

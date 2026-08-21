@@ -57,6 +57,13 @@ public final class KossmanStatDefinitions {
 			MAX_LEVEL
 	);
 
+	public static final StatDefinition BOWMANSHIP = new StatDefinition(
+			new StatId("gokistats:bowmanship"),
+			"bowmanship",
+			"Bowmanship",
+			MAX_LEVEL
+	);
+
 	public static final StatDefinition PROTECTION = new StatDefinition(
 			new StatId("gokistats:protection"),
 			"protection",
@@ -127,6 +134,20 @@ public final class KossmanStatDefinitions {
 			MAX_LEVEL
 	);
 
+	public static final StatDefinition TREASURE_FINDER = new StatDefinition(
+			new StatId("gokistats:treasure_finder"),
+			"treasure_finder",
+			"Treasure Finder",
+			MAX_LEVEL
+	);
+
+	public static final StatDefinition MINING_MAGICIAN = new StatDefinition(
+			new StatId("gokistats:mining_magician"),
+			"mining_magician",
+			"Mining Magician",
+			MAX_LEVEL
+	);
+
 	public static final List<StatDefinition> ALL = List.of(
 			MINING,
 			HEALTH,
@@ -135,6 +156,7 @@ public final class KossmanStatDefinitions {
 			TRIMMING,
 			SWORDSMANSHIP,
 			PUGILISM,
+			BOWMANSHIP,
 			PROTECTION,
 			TEMPERING,
 			TOUGH_SKIN,
@@ -144,7 +166,9 @@ public final class KossmanStatDefinitions {
 			CLIMBING,
 			STEADY_GUARD,
 			REAPER,
-			ROLL
+			ROLL,
+			TREASURE_FINDER,
+			MINING_MAGICIAN
 	);
 	private static final Map<String, StatDefinition> BY_COMMAND_NAME = ALL.stream()
 			.collect(Collectors.toUnmodifiableMap(StatDefinition::commandName, stat -> stat));

@@ -8,6 +8,8 @@ public final class StatFormulas {
 	private static final double SWORDSMANSHIP_EXPONENT = 1.1D;
 	private static final double PUGILISM_MAX_DAMAGE_BONUS = 4.0D;
 	private static final double PUGILISM_EXPONENT = 1.15D;
+	private static final double BOWMANSHIP_MAX_DAMAGE_BONUS = 0.30D;
+	private static final double BOWMANSHIP_EXPONENT = 1.10D;
 	private static final double HEALTH_BONUS_PER_LEVEL = 0.4D;
 	private static final int MAX_DEFENSIVE_LEVEL = 50;
 	private static final double PROTECTION_MAX_REDUCTION = 0.35D;
@@ -33,6 +35,10 @@ public final class StatFormulas {
 	private static final double LEAPER_HORIZONTAL_EXPONENT = 1.10D;
 	private static final double LEAPER_VERTICAL_EXPONENT = 1.12D;
 	private static final double CLIMBING_EXPONENT = 1.08D;
+	private static final double TREASURE_FINDER_MAX_PROC_CHANCE = 0.12D;
+	private static final double TREASURE_FINDER_EXPONENT = 1.16D;
+	private static final double MINING_MAGICIAN_MAX_PROC_CHANCE = 0.16D;
+	private static final double MINING_MAGICIAN_EXPONENT = 1.14D;
 
 	private StatFormulas() {
 	}
@@ -59,6 +65,14 @@ public final class StatFormulas {
 		}
 
 		return PUGILISM_MAX_DAMAGE_BONUS * Math.pow(normalizedLevel(level), PUGILISM_EXPONENT);
+	}
+
+	public static double bowmanshipDamageBonus(int level) {
+		if (level <= 0) {
+			return 0.0D;
+		}
+
+		return BOWMANSHIP_MAX_DAMAGE_BONUS * Math.pow(normalizedLevel(level), BOWMANSHIP_EXPONENT);
 	}
 
 	public static double healthMaxHealthBonus(int level) {
@@ -115,6 +129,14 @@ public final class StatFormulas {
 
 	public static double climbingSpeedBonus(int level) {
 		return boundedCurve(level, CLIMBING_MAX_BONUS, CLIMBING_EXPONENT);
+	}
+
+	public static double treasureFinderProcChance(int level) {
+		return boundedCurve(level, TREASURE_FINDER_MAX_PROC_CHANCE, TREASURE_FINDER_EXPONENT);
+	}
+
+	public static double miningMagicianProcChance(int level) {
+		return boundedCurve(level, MINING_MAGICIAN_MAX_PROC_CHANCE, MINING_MAGICIAN_EXPONENT);
 	}
 
 	public static float applyDamageReduction(float amount, double reduction) {

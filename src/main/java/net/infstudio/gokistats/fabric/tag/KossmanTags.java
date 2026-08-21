@@ -4,6 +4,7 @@ import net.infstudio.gokistats.KossmanStats;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 
 public final class KossmanTags {
@@ -12,6 +13,9 @@ public final class KossmanTags {
 	public static final TagKey<Item> CHOPPING_TOOLS = itemTag("chopping");
 	public static final TagKey<Item> TRIMMING_TOOLS = itemTag("trimming");
 	public static final TagKey<Item> SWORDS = itemTag("sword");
+	public static final TagKey<Item> BOWS = itemTag("bow");
+	public static final TagKey<Item> MAGICIAN_ITEMS = itemTag("magician_item");
+	public static final TagKey<Block> MAGICIAN_ORES = blockTag("magician_ore");
 
 	private KossmanTags() {
 	}
@@ -19,6 +23,13 @@ public final class KossmanTags {
 	private static TagKey<Item> itemTag(String path) {
 		return TagKey.create(
 				Registries.ITEM,
+				Identifier.fromNamespaceAndPath(KossmanStats.MOD_ID, path)
+		);
+	}
+
+	private static TagKey<Block> blockTag(String path) {
+		return TagKey.create(
+				Registries.BLOCK,
 				Identifier.fromNamespaceAndPath(KossmanStats.MOD_ID, path)
 		);
 	}
