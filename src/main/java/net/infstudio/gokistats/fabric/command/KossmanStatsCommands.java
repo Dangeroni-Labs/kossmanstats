@@ -54,14 +54,14 @@ public final class KossmanStatsCommands {
 					var player = context.getSource().getPlayerOrException();
 					var result = StatUpgradeService.upgrade(player, stat);
 
-					if (result.upgraded()) {
-						StatEffects.afterUpgrade(player, stat);
+					if (result.changed()) {
+						StatEffects.afterProgressionChange(player, stat);
 						StatSnapshotSync.send(player);
 						context.getSource().sendSuccess(
-								() -> Component.literal(result.message() + " Cost: " + result.cost() + " XP."),
+								() -> Component.literal(result.message() + " Cost: " + result.xpAmount() + " XP."),
 								false
 						);
-						return result.level();
+						return result.currentLevel();
 					}
 
 					context.getSource().sendFailure(Component.literal(result.message()));

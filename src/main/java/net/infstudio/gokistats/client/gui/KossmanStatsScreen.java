@@ -7,6 +7,7 @@ import net.infstudio.gokistats.client.state.ClientStatSnapshotCache;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.progression.StatProgression;
+import net.infstudio.gokistats.fabric.network.StatDowngradeRequestPayload;
 import net.infstudio.gokistats.fabric.network.StatUpgradeRequestPayload;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -21,6 +22,7 @@ public final class KossmanStatsScreen extends Screen {
 	private static final int TEXT_COLOR = 0xFFD8D8D8;
 	private static final int MUTED_COLOR = 0xFFA0A0A0;
 	private static final int PANEL_COLOR = 0xB0202020;
+	private final Map<StatDefinition, Button> downgradeButtons = new LinkedHashMap<>();
 	private final Map<StatDefinition, Button> upgradeButtons = new LinkedHashMap<>();
 
 	public KossmanStatsScreen() {
@@ -29,14 +31,19 @@ public final class KossmanStatsScreen extends Screen {
 
 	@Override
 	protected void init() {
+		downgradeButtons.clear();
 		upgradeButtons.clear();
 		int left = (width - PANEL_WIDTH) / 2;
 		int y = rowStartY();
 
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
+			Button downgradeButton = Button.builder(Component.literal("-"), pressed -> requestDowngrade(stat))
+					.bounds(left + 274, y - 4, BUTTON_SIZE, BUTTON_SIZE)
+					.build();
 			Button button = Button.builder(Component.literal("+"), pressed -> requestUpgrade(stat))
 					.bounds(left + 294, y - 4, BUTTON_SIZE, BUTTON_SIZE)
 					.build();
+			downgradeButtons.put(stat, addRenderableWidget(downgradeButton));
 			upgradeButtons.put(stat, addRenderableWidget(button));
 			y += ROW_HEIGHT;
 		}
@@ -68,7 +75,14 @@ public final class KossmanStatsScreen extends Screen {
 
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
 			renderStatRow(graphics, stat, left, y);
-			if (isMouseOverRow(mouseX, mouseY, left, y)) {
+			if (isMouseOverButton(downgradeButtons.get(stat), mouseX, mouseY)) {
+				graphics.setComponentTooltipForNextFrame(
+						font,
+						StatTooltipContent.forDowngrade(stat, ClientStatSnapshotCache.level(stat)),
+						mouseX,
+						mouseY
+				);
+			} else if (isMouseOverRow(mouseX, mouseY, left, y)) {
 				graphics.setComponentTooltipForNextFrame(
 						font,
 						StatTooltipContent.forStat(stat, ClientStatSnapshotCache.level(stat)),
@@ -101,19 +115,27 @@ public final class KossmanStatsScreen extends Screen {
 	}
 
 	private void updateButtonStates() {
-		for (Map.Entry<StatDefinition, Button> entry : upgradeButtons.entrySet()) {
-			StatDefinition stat = entry.getKey();
-			Button button = entry.getValue();
+		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
 			int level = ClientStatSnapshotCache.level(stat);
+			Button downgradeButton = downgradeButtons.get(stat);
+			Button upgradeButton = upgradeButtons.get(stat);
 
-			button.visible = ClientStatSnapshotCache.hasSnapshot();
-			button.active = level < stat.maxLevel();
+			downgradeButton.visible = ClientStatSnapshotCache.hasSnapshot();
+			downgradeButton.active = level > 0;
+			upgradeButton.visible = ClientStatSnapshotCache.hasSnapshot();
+			upgradeButton.active = level < stat.maxLevel();
 		}
 	}
 
 	private void requestUpgrade(StatDefinition stat) {
 		if (ClientPlayNetworking.canSend(StatUpgradeRequestPayload.ID)) {
 			ClientPlayNetworking.send(new StatUpgradeRequestPayload(stat.id().value()));
+		}
+	}
+
+	private void requestDowngrade(StatDefinition stat) {
+		if (ClientPlayNetworking.canSend(StatDowngradeRequestPayload.ID)) {
+			ClientPlayNetworking.send(new StatDowngradeRequestPayload(stat.id().value()));
 		}
 	}
 
@@ -126,6 +148,15 @@ public final class KossmanStatsScreen extends Screen {
 
 	private int rowStartY() {
 		return 56;
+	}
+
+	private boolean isMouseOverButton(Button button, int mouseX, int mouseY) {
+		return button != null
+				&& button.visible
+				&& mouseX >= button.getX()
+				&& mouseX <= button.getX() + button.getWidth()
+				&& mouseY >= button.getY()
+				&& mouseY <= button.getY() + button.getHeight();
 	}
 
 	private String nextCostText(StatDefinition stat, int level) {

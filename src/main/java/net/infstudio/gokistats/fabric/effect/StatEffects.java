@@ -9,7 +9,7 @@ public final class StatEffects {
 	private StatEffects() {
 	}
 
-	public static void afterUpgrade(ServerPlayer player, StatDefinition stat) {
+	public static void afterProgressionChange(ServerPlayer player, StatDefinition stat) {
 		if (stat.equals(KossmanStatDefinitions.HEALTH)) {
 			HealthAttributeHandler.apply(player);
 		}

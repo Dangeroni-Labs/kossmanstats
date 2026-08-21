@@ -5,6 +5,7 @@ import java.util.Locale;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.formula.StatFormulas;
+import net.infstudio.gokistats.core.progression.StatProgression;
 import net.minecraft.network.chat.Component;
 
 final class StatTooltipContent {
@@ -95,6 +96,27 @@ final class StatTooltipContent {
 		return List.of(
 				Component.literal(stat.displayName()),
 				Component.literal("No effect description available.")
+		);
+	}
+
+	static List<Component> forDowngrade(StatDefinition stat, int level) {
+		if (level <= 0) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal("Already at level 0."),
+					Component.literal("No refund available.")
+			);
+		}
+
+		return List.of(
+				Component.literal("Downgrade to level " + (level - 1)),
+				Component.literal(
+						"Refund: "
+								+ StatProgression.downgradeRefundForLevel(level)
+								+ " XP ("
+								+ formatNumber(StatProgression.DOWNGRADE_REFUND_RATE * 100.0D)
+								+ "%)"
+				)
 		);
 	}
 

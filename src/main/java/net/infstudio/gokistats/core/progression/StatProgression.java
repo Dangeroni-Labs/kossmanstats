@@ -1,6 +1,7 @@
 package net.infstudio.gokistats.core.progression;
 
 public final class StatProgression {
+	public static final double DOWNGRADE_REFUND_RATE = 0.70D;
 	private static final double BASE_OFFSET = 8.0D;
 	private static final double LINEAR_SCALE = 1.0D;
 	private static final double QUADRATIC_SCALE = 0.32D;
@@ -26,6 +27,14 @@ public final class StatProgression {
 				+ LATEGAME_RAMP_SCALE * squaredRamp(value, 35.0D)
 				+ ENDGAME_RAMP_SCALE * squaredRamp(value, 45.0D);
 		return (int) Math.ceil(cost);
+	}
+
+	public static int downgradeRefundForLevel(int currentLevel) {
+		if (currentLevel <= 0) {
+			return 0;
+		}
+
+		return (int) Math.floor(upgradeCostForLevel(currentLevel - 1) * DOWNGRADE_REFUND_RATE);
 	}
 
 	private static double squaredRamp(double level, double startLevel) {

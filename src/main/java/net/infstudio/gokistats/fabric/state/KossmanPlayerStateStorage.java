@@ -34,6 +34,10 @@ public final class KossmanPlayerStateStorage {
 		setLevel(player, stat, getLevel(player, stat) + 1);
 	}
 
+	public static void decrementLevel(ServerPlayer player, StatDefinition stat) {
+		setLevel(player, stat, getLevel(player, stat) - 1);
+	}
+
 	private static AttachmentType<Integer> levelAttachment(StatDefinition stat) {
 		return AttachmentRegistry.create(
 				attachmentId(stat),
