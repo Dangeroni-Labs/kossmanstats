@@ -56,6 +56,18 @@ final class StatTooltipContent {
 			return featherFallTooltip(stat, level);
 		}
 
+		if (stat.equals(KossmanStatDefinitions.LEAPER_H)) {
+			return bonusTooltip(stat, level, "Increases forward sprint-jump distance.", "horizontal jump boost", StatFormulas::leaperHorizontalBonus, true);
+		}
+
+		if (stat.equals(KossmanStatDefinitions.LEAPER_V)) {
+			return bonusTooltip(stat, level, "Increases sprint-jump height.", "jump height bonus", StatFormulas::leaperVerticalBonus, true);
+		}
+
+		if (stat.equals(KossmanStatDefinitions.CLIMBING)) {
+			return bonusTooltip(stat, level, "Increases upward climbing speed on climbables.", "climbing speed", StatFormulas::climbingSpeedBonus, true);
+		}
+
 		if (stat.equals(KossmanStatDefinitions.STEADY_GUARD)) {
 			return steadyGuardTooltip(stat, level);
 		}

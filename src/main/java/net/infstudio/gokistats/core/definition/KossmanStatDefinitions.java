@@ -85,6 +85,27 @@ public final class KossmanStatDefinitions {
 			MAX_LEVEL
 	);
 
+	public static final StatDefinition LEAPER_H = new StatDefinition(
+			new StatId("gokistats:leaper_h"),
+			"leaper_h",
+			"Leaper H",
+			MAX_LEVEL
+	);
+
+	public static final StatDefinition LEAPER_V = new StatDefinition(
+			new StatId("gokistats:leaper_v"),
+			"leaper_v",
+			"Leaper V",
+			MAX_LEVEL
+	);
+
+	public static final StatDefinition CLIMBING = new StatDefinition(
+			new StatId("gokistats:climbing"),
+			"climbing",
+			"Climbing",
+			MAX_LEVEL
+	);
+
 	public static final StatDefinition STEADY_GUARD = new StatDefinition(
 			new StatId("gokistats:steady_guard"),
 			"steady_guard",
@@ -118,6 +139,9 @@ public final class KossmanStatDefinitions {
 			TEMPERING,
 			TOUGH_SKIN,
 			FEATHER_FALL,
+			LEAPER_H,
+			LEAPER_V,
+			CLIMBING,
 			STEADY_GUARD,
 			REAPER,
 			ROLL

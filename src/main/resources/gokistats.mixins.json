@@ -5,7 +5,8 @@
   "mixins": [
     "PlayerMiningSpeedMixin",
     "PlayerCombatDamageMixin",
-    "LivingEntityDamageReductionMixin"
+    "LivingEntityDamageReductionMixin",
+    "LivingEntityMovementMixin"
   ],
   "injectors": {
     "defaultRequire": 1

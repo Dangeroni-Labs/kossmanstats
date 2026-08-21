@@ -27,6 +27,12 @@ public final class StatFormulas {
 	private static final double REAPER_MAX_TARGET_HEALTH = 40.0D;
 	private static final double ROLL_MAX_EVADE_CHANCE = 0.18D;
 	private static final double ROLL_EVADE_EXPONENT = 1.18D;
+	private static final double LEAPER_HORIZONTAL_MAX_BONUS = 0.30D;
+	private static final double LEAPER_VERTICAL_MAX_BONUS = 0.18D;
+	private static final double CLIMBING_MAX_BONUS = 0.50D;
+	private static final double LEAPER_HORIZONTAL_EXPONENT = 1.10D;
+	private static final double LEAPER_VERTICAL_EXPONENT = 1.12D;
+	private static final double CLIMBING_EXPONENT = 1.08D;
 
 	private StatFormulas() {
 	}
@@ -97,6 +103,18 @@ public final class StatFormulas {
 
 	public static double rollEvadeChance(int level) {
 		return boundedCurve(level, ROLL_MAX_EVADE_CHANCE, ROLL_EVADE_EXPONENT);
+	}
+
+	public static double leaperHorizontalBonus(int level) {
+		return boundedCurve(level, LEAPER_HORIZONTAL_MAX_BONUS, LEAPER_HORIZONTAL_EXPONENT);
+	}
+
+	public static double leaperVerticalBonus(int level) {
+		return boundedCurve(level, LEAPER_VERTICAL_MAX_BONUS, LEAPER_VERTICAL_EXPONENT);
+	}
+
+	public static double climbingSpeedBonus(int level) {
+		return boundedCurve(level, CLIMBING_MAX_BONUS, CLIMBING_EXPONENT);
 	}
 
 	public static float applyDamageReduction(float amount, double reduction) {
