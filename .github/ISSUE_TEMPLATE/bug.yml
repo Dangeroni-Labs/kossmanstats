@@ -1,0 +1,71 @@
+name: Bug report
+description: Report a reproducible problem with Kossman Stats
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please provide enough information to reproduce it.
+
+  - type: input
+    id: version
+    attributes:
+      label: Kossman Stats version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: minecraft
+    attributes:
+      label: Minecraft version
+      placeholder: "26.2"
+    validations:
+      required: true
+
+  - type: input
+    id: loader
+    attributes:
+      label: Fabric Loader version
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / crash report
+      description: Paste relevant logs or attach the crash report.
+
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other installed mods
+      description: List relevant mods if this may be a compatibility issue.
