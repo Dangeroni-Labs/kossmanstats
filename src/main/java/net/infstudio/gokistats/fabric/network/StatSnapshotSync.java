@@ -20,7 +20,11 @@ public final class StatSnapshotSync {
 	public static void register() {
 		PayloadTypeRegistry.clientboundPlay().register(StatSnapshotPayload.ID, StatSnapshotPayload.CODEC);
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> send(handler.player));
-		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> send(newPlayer));
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			if (alive) {
+				send(newPlayer);
+			}
+		});
 	}
 
 	public static void send(ServerPlayer player) {

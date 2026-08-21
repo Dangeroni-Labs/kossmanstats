@@ -38,6 +38,11 @@ public final class KossmanPlayerStateStorage {
 		setLevel(player, stat, getLevel(player, stat) - 1);
 	}
 
+	public static void decrementLevel(ServerPlayer player, StatDefinition stat, int amount, int minimumLevel) {
+		int targetLevel = Math.max(minimumLevel, getLevel(player, stat) - Math.max(0, amount));
+		setLevel(player, stat, targetLevel);
+	}
+
 	private static AttachmentType<Integer> levelAttachment(StatDefinition stat) {
 		return AttachmentRegistry.create(
 				attachmentId(stat),
