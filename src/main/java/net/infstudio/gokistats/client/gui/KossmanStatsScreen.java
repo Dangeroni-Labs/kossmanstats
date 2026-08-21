@@ -3,6 +3,7 @@ package net.infstudio.gokistats.client.gui;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.infstudio.gokistats.KossmanStats;
 import net.infstudio.gokistats.client.state.ClientStatSnapshotCache;
 import net.infstudio.gokistats.core.config.KossmanBalance;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
@@ -10,21 +11,39 @@ import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.progression.StatProgression;
 import net.infstudio.gokistats.fabric.network.StatDowngradeRequestPayload;
 import net.infstudio.gokistats.fabric.network.StatUpgradeRequestPayload;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public final class KossmanStatsScreen extends Screen {
-	private static final int ROW_HEIGHT = 18;
-	private static final int PANEL_WIDTH = 320;
+	private static final int PANEL_MAX_WIDTH = 520;
+	private static final int PANEL_MIN_WIDTH = 240;
 	private static final int BUTTON_SIZE = 16;
+	private static final int ROW_HEIGHT = 30;
+	private static final int ROW_PADDING = 6;
+	private static final int ICON_TEXTURE_SIZE = 32;
+	private static final int ICON_RENDER_SIZE = 24;
+	private static final int PANEL_TOP = 28;
+	private static final int PANEL_BOTTOM_PADDING = 10;
+	private static final int PANEL_HORIZONTAL_PADDING = 14;
+	private static final int PANEL_VERTICAL_PADDING = 12;
+	private static final int FOOTER_BOTTOM_MARGIN = 20;
+	private static final int FOOTER_GAP = 10;
+	private static final int BUTTON_GAP = 5;
+	private static final int COLUMN_GAP = 12;
 	private static final int TITLE_COLOR = 0xFFFFFFFF;
 	private static final int TEXT_COLOR = 0xFFD8D8D8;
 	private static final int MUTED_COLOR = 0xFFA0A0A0;
 	private static final int PANEL_COLOR = 0xB0202020;
+	private static final int MISSING_ICON_BG = 0x80303030;
+	private static final int MISSING_ICON_BORDER = 0xFFA0A0A0;
 	private final Map<StatDefinition, Button> downgradeButtons = new LinkedHashMap<>();
 	private final Map<StatDefinition, Button> upgradeButtons = new LinkedHashMap<>();
+	private int scrollOffset;
 
 	public KossmanStatsScreen() {
 		super(Component.translatable("screen.gokistats.stats"));
@@ -34,48 +53,58 @@ public final class KossmanStatsScreen extends Screen {
 	protected void init() {
 		downgradeButtons.clear();
 		upgradeButtons.clear();
-		int left = (width - PANEL_WIDTH) / 2;
-		int y = rowStartY();
 
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
 			Button downgradeButton = Button.builder(Component.literal("-"), pressed -> requestDowngrade(stat))
-					.bounds(left + 274, y - 4, BUTTON_SIZE, BUTTON_SIZE)
+					.bounds(0, 0, BUTTON_SIZE, BUTTON_SIZE)
 					.build();
 			Button button = Button.builder(Component.literal("+"), pressed -> requestUpgrade(stat))
-					.bounds(left + 294, y - 4, BUTTON_SIZE, BUTTON_SIZE)
+					.bounds(0, 0, BUTTON_SIZE, BUTTON_SIZE)
 					.build();
 			downgradeButtons.put(stat, addRenderableWidget(downgradeButton));
 			upgradeButtons.put(stat, addRenderableWidget(button));
-			y += ROW_HEIGHT;
 		}
+
+		scrollOffset = clampScroll(scrollOffset);
+		updateButtonStatesAndLayout();
 	}
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
 		graphics.fill(0, 0, width, height, 0xC0101010);
-		int left = (width - PANEL_WIDTH) / 2;
-		int top = 28;
-		int y = rowStartY();
+		int left = panelLeft();
+		int right = panelRight();
+		int panelBottom = panelBottomY();
+		int listTop = listTopY();
+		int listBottom = listBottomY();
 
 		graphics.centeredText(font, title, width / 2, 14, TITLE_COLOR);
-		updateButtonStates();
+		updateButtonStatesAndLayout();
 
 		if (!ClientStatSnapshotCache.hasSnapshot()) {
 			graphics.centeredText(
 					font,
 					Component.translatable("screen.gokistats.stats.waiting"),
 					width / 2,
-					y,
+					listTop + 8,
 					MUTED_COLOR
 			);
 			super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 			return;
 		}
 
-		graphics.fill(left - 10, top, left + PANEL_WIDTH + 10, y + KossmanStatDefinitions.ALL.size() * ROW_HEIGHT + 6, PANEL_COLOR);
+		graphics.fill(left, PANEL_TOP, right, panelBottom, PANEL_COLOR);
 
-		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
-			renderStatRow(graphics, stat, left, y);
+		int contentY = listTop + ROW_PADDING - scrollOffset;
+		graphics.enableScissor(left + PANEL_HORIZONTAL_PADDING, listTop, right - PANEL_HORIZONTAL_PADDING, listBottom);
+		for (int index = 0; index < KossmanStatDefinitions.ALL.size(); index++) {
+			StatDefinition stat = KossmanStatDefinitions.ALL.get(index);
+			int rowY = contentY + (index * ROW_HEIGHT);
+			if (!isRowFullyVisible(rowY, listTop, listBottom)) {
+				continue;
+			}
+
+			renderStatRow(graphics, stat, left, rowY);
 			if (isMouseOverButton(downgradeButtons.get(stat), mouseX, mouseY)) {
 				graphics.setComponentTooltipForNextFrame(
 						font,
@@ -83,7 +112,7 @@ public final class KossmanStatsScreen extends Screen {
 						mouseX,
 						mouseY
 				);
-			} else if (isMouseOverRow(mouseX, mouseY, left, y)) {
+			} else if (isMouseOverRow(mouseX, mouseY, left, rowY)) {
 				graphics.setComponentTooltipForNextFrame(
 						font,
 						StatTooltipContent.forStat(stat, ClientStatSnapshotCache.level(stat)),
@@ -91,14 +120,14 @@ public final class KossmanStatsScreen extends Screen {
 						mouseY
 				);
 			}
-			y += ROW_HEIGHT;
 		}
+		graphics.disableScissor();
 
 		graphics.centeredText(
 				font,
 				Component.translatable("screen.gokistats.stats.close_hint"),
 				width / 2,
-				height - 24,
+				footerY(),
 				MUTED_COLOR
 		);
 		super.extractRenderState(graphics, mouseX, mouseY, partialTick);
@@ -109,22 +138,41 @@ public final class KossmanStatsScreen extends Screen {
 		Component name = Component.literal(stat.displayName());
 		Component levelText = Component.literal("Level " + level);
 		Component nextText = Component.literal("Next: " + nextCostText(stat, level));
+		int textY = centeredTextY(y);
+		int iconY = centeredIconY(y);
+		int iconX = iconX(left);
 
-		graphics.text(font, name, left, y, TEXT_COLOR);
-		graphics.text(font, levelText, left + 140, y, TEXT_COLOR);
-		graphics.text(font, nextText, left + 220, y, MUTED_COLOR);
+		renderIcon(graphics, stat, level, iconX, iconY);
+		graphics.text(font, name, nameX(left), textY, TEXT_COLOR);
+		graphics.text(font, levelText, levelX(left), textY, TEXT_COLOR);
+		graphics.text(font, nextText, nextX(left), textY, MUTED_COLOR);
 	}
 
-	private void updateButtonStates() {
-		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
+	private void updateButtonStatesAndLayout() {
+		int left = panelLeft();
+		int listTop = listTopY();
+		int listBottom = listBottomY();
+		int buttonX = upgradeButtonX(left);
+		int downgradeX = buttonX - BUTTON_SIZE - BUTTON_GAP;
+		int contentY = listTop + ROW_PADDING - scrollOffset;
+
+		for (int index = 0; index < KossmanStatDefinitions.ALL.size(); index++) {
+			StatDefinition stat = KossmanStatDefinitions.ALL.get(index);
 			int level = ClientStatSnapshotCache.level(stat);
 			Button downgradeButton = downgradeButtons.get(stat);
 			Button upgradeButton = upgradeButtons.get(stat);
 			boolean enabled = KossmanBalance.current().isEnabled(stat);
+			int rowY = contentY + (index * ROW_HEIGHT);
+			boolean visible = ClientStatSnapshotCache.hasSnapshot() && isRowFullyVisible(rowY, listTop, listBottom);
+			int buttonY = rowY + ((ROW_HEIGHT - BUTTON_SIZE) / 2);
 
-			downgradeButton.visible = ClientStatSnapshotCache.hasSnapshot();
+			downgradeButton.setX(downgradeX);
+			downgradeButton.setY(buttonY);
+			upgradeButton.setX(buttonX);
+			upgradeButton.setY(buttonY);
+			downgradeButton.visible = visible;
 			downgradeButton.active = enabled && level > 0;
-			upgradeButton.visible = ClientStatSnapshotCache.hasSnapshot();
+			upgradeButton.visible = visible;
 			upgradeButton.active = enabled && level < KossmanBalance.current().maxStatLevel();
 		}
 	}
@@ -143,13 +191,9 @@ public final class KossmanStatsScreen extends Screen {
 
 	private boolean isMouseOverRow(int mouseX, int mouseY, int left, int y) {
 		return mouseX >= left - 6
-				&& mouseX <= left + PANEL_WIDTH + 6
-				&& mouseY >= y - 4
-				&& mouseY <= y + ROW_HEIGHT - 4;
-	}
-
-	private int rowStartY() {
-		return 56;
+				&& mouseX <= panelRight() + 6
+				&& mouseY >= y
+				&& mouseY <= y + ROW_HEIGHT;
 	}
 
 	private boolean isMouseOverButton(Button button, int mouseX, int mouseY) {
@@ -171,5 +215,145 @@ public final class KossmanStatsScreen extends Screen {
 		}
 
 		return StatProgression.upgradeCostForLevel(level) + " XP";
+	}
+
+	private void renderIcon(GuiGraphicsExtractor graphics, StatDefinition stat, int level, int x, int y) {
+		Identifier icon = resolveIcon(stat, level);
+		if (icon == null) {
+			graphics.fill(x, y, x + ICON_RENDER_SIZE, y + ICON_RENDER_SIZE, MISSING_ICON_BG);
+			graphics.fill(x, y, x + ICON_RENDER_SIZE, y + 1, MISSING_ICON_BORDER);
+			graphics.fill(x, y + ICON_RENDER_SIZE - 1, x + ICON_RENDER_SIZE, y + ICON_RENDER_SIZE, MISSING_ICON_BORDER);
+			graphics.fill(x, y, x + 1, y + ICON_RENDER_SIZE, MISSING_ICON_BORDER);
+			graphics.fill(x + ICON_RENDER_SIZE - 1, y, x + ICON_RENDER_SIZE, y + ICON_RENDER_SIZE, MISSING_ICON_BORDER);
+			graphics.centeredText(font, Component.literal("?"), x + (ICON_RENDER_SIZE / 2), y + 8, MISSING_ICON_BORDER);
+			return;
+		}
+
+		graphics.blit(
+				RenderPipelines.GUI_TEXTURED,
+				icon,
+				x,
+				y,
+				0.0F,
+				0.0F,
+				ICON_RENDER_SIZE,
+				ICON_RENDER_SIZE,
+				ICON_TEXTURE_SIZE,
+				ICON_TEXTURE_SIZE,
+				ICON_TEXTURE_SIZE,
+				ICON_TEXTURE_SIZE
+		);
+	}
+
+	private Identifier resolveIcon(StatDefinition stat, int level) {
+		String suffix = iconSuffix(level);
+		StatDefinition.StatIconMetadata icon = stat.icon();
+		Identifier identifier = Identifier.fromNamespaceAndPath(
+				KossmanStats.MOD_ID,
+				"gui/stats/32/" + icon.folderName() + "/" + icon.fileStem() + suffix + ".png"
+		);
+		return hasResource(identifier) ? identifier : null;
+	}
+
+	private String iconSuffix(int level) {
+		if (level <= 0) {
+			return "_grey";
+		}
+
+		if (level >= KossmanBalance.current().maxStatLevel()) {
+			return "_max";
+		}
+
+		return "_def";
+	}
+
+	private boolean hasResource(Identifier id) {
+		Minecraft client = Minecraft.getInstance();
+		return client != null && client.getResourceManager().getResource(id).isPresent();
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (maxScroll() <= 0 || mouseY < listTopY() || mouseY > listBottomY()) {
+			return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+		}
+
+		scrollOffset = clampScroll(scrollOffset - ((int) Math.signum(verticalAmount) * ROW_HEIGHT));
+		updateButtonStatesAndLayout();
+		return true;
+	}
+
+	private int panelWidth() {
+		return Math.min(PANEL_MAX_WIDTH, Math.max(PANEL_MIN_WIDTH, width - 40));
+	}
+
+	private int panelLeft() {
+		return (width - panelWidth()) / 2;
+	}
+
+	private int panelRight() {
+		return panelLeft() + panelWidth();
+	}
+
+	private int panelBottomY() {
+		return Math.max(PANEL_TOP + PANEL_VERTICAL_PADDING + ROW_HEIGHT + PANEL_BOTTOM_PADDING, footerY() - FOOTER_GAP);
+	}
+
+	private int footerY() {
+		return height - FOOTER_BOTTOM_MARGIN;
+	}
+
+	private int listTopY() {
+		return PANEL_TOP + PANEL_VERTICAL_PADDING;
+	}
+
+	private int listBottomY() {
+		return Math.max(listTopY(), panelBottomY() - PANEL_BOTTOM_PADDING);
+	}
+
+	private boolean isRowFullyVisible(int rowY, int listTop, int listBottom) {
+		return rowY >= listTop && rowY + ROW_HEIGHT <= listBottom;
+	}
+
+	private int centeredTextY(int rowY) {
+		return rowY + ((ROW_HEIGHT - font.lineHeight) / 2);
+	}
+
+	private int centeredIconY(int rowY) {
+		return rowY + ((ROW_HEIGHT - ICON_RENDER_SIZE) / 2);
+	}
+
+	private int maxScroll() {
+		int visibleRows = Math.max(1, ((listBottomY() - listTopY()) - (ROW_PADDING * 2)) / ROW_HEIGHT);
+		return Math.max(0, (KossmanStatDefinitions.ALL.size() - visibleRows) * ROW_HEIGHT);
+	}
+
+	private int clampScroll(int offset) {
+		int clamped = Math.max(0, Math.min(offset, maxScroll()));
+		return (clamped / ROW_HEIGHT) * ROW_HEIGHT;
+	}
+
+	private int iconX(int left) {
+		return left + PANEL_HORIZONTAL_PADDING;
+	}
+
+	private int nameX(int left) {
+		return iconX(left) + ICON_RENDER_SIZE + COLUMN_GAP;
+	}
+
+	private int levelX(int left) {
+		return nextX(left) - 96;
+	}
+
+	private int nextX(int left) {
+		return downgradeButtonX(left) - 142;
+	}
+
+	private int downgradeButtonX(int left) {
+		return upgradeButtonX(left) - BUTTON_SIZE - BUTTON_GAP;
+	}
+
+	private int upgradeButtonX(int left) {
+		return left + panelWidth() - PANEL_HORIZONTAL_PADDING - BUTTON_SIZE;
 	}
 }
