@@ -2,6 +2,7 @@ package net.infstudio.gokistats.fabric.state;
 
 import com.mojang.serialization.Codec;
 import java.util.Map;
+import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.infstudio.gokistats.KossmanStats;
@@ -11,15 +12,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public final class KossmanPlayerStateStorage {
-	private static final Map<StatDefinition, AttachmentType<Integer>> LEVEL_ATTACHMENTS = Map.of(
-			KossmanStatDefinitions.MINING, levelAttachment(KossmanStatDefinitions.MINING),
-			KossmanStatDefinitions.HEALTH, levelAttachment(KossmanStatDefinitions.HEALTH),
-			KossmanStatDefinitions.DIGGING, levelAttachment(KossmanStatDefinitions.DIGGING),
-			KossmanStatDefinitions.CHOPPING, levelAttachment(KossmanStatDefinitions.CHOPPING),
-			KossmanStatDefinitions.TRIMMING, levelAttachment(KossmanStatDefinitions.TRIMMING),
-			KossmanStatDefinitions.SWORDSMANSHIP, levelAttachment(KossmanStatDefinitions.SWORDSMANSHIP),
-			KossmanStatDefinitions.PUGILISM, levelAttachment(KossmanStatDefinitions.PUGILISM)
-	);
+	private static final Map<StatDefinition, AttachmentType<Integer>> LEVEL_ATTACHMENTS = KossmanStatDefinitions.ALL.stream()
+			.collect(Collectors.toUnmodifiableMap(stat -> stat, KossmanPlayerStateStorage::levelAttachment));
 
 	private KossmanPlayerStateStorage() {
 	}

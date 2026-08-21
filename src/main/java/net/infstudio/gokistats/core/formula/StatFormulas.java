@@ -9,6 +9,9 @@ public final class StatFormulas {
 	private static final double PUGILISM_MAX_DAMAGE_BONUS = 4.0D;
 	private static final double PUGILISM_EXPONENT = 1.15D;
 	private static final double HEALTH_BONUS_PER_LEVEL = 0.4D;
+	private static final double PROTECTION_REDUCTION_PER_LEVEL = 0.008D;
+	private static final double SPECIALIZED_REDUCTION_PER_LEVEL = 0.026D;
+	private static final double FEATHER_FALL_SAFE_DISTANCE_BONUS_PER_LEVEL = 0.1D;
 
 	private StatFormulas() {
 	}
@@ -39,6 +42,27 @@ public final class StatFormulas {
 
 	public static double healthMaxHealthBonus(int level) {
 		return Math.max(0, level) * HEALTH_BONUS_PER_LEVEL;
+	}
+
+	public static double protectionDamageReduction(int level) {
+		return Math.max(0, level) * PROTECTION_REDUCTION_PER_LEVEL;
+	}
+
+	public static double specializedDamageReduction(int level) {
+		return Math.max(0, level) * SPECIALIZED_REDUCTION_PER_LEVEL;
+	}
+
+	public static double featherFallSafeDistanceBonus(int level) {
+		return Math.max(0, level) * FEATHER_FALL_SAFE_DISTANCE_BONUS_PER_LEVEL;
+	}
+
+	public static float applyDamageReduction(float amount, double reduction) {
+		if (amount <= 0.0F || reduction <= 0.0D) {
+			return amount;
+		}
+
+		double multiplier = Math.max(0.0D, 1.0D - reduction);
+		return (float) (amount * multiplier);
 	}
 
 	private static double normalizedLevel(int level) {

@@ -40,6 +40,22 @@ final class StatTooltipContent {
 			return bonusTooltip(stat, level, "Increases maximum health.", "HP", StatFormulas::healthMaxHealthBonus, false);
 		}
 
+		if (stat.equals(KossmanStatDefinitions.PROTECTION)) {
+			return reductionTooltip(stat, level, "Reduces melee damage from mobs.", StatFormulas::protectionDamageReduction);
+		}
+
+		if (stat.equals(KossmanStatDefinitions.TEMPERING)) {
+			return reductionTooltip(stat, level, "Reduces damage from fire and lava.", StatFormulas::specializedDamageReduction);
+		}
+
+		if (stat.equals(KossmanStatDefinitions.TOUGH_SKIN)) {
+			return reductionTooltip(stat, level, "Reduces damage from explosions.", StatFormulas::specializedDamageReduction);
+		}
+
+		if (stat.equals(KossmanStatDefinitions.FEATHER_FALL)) {
+			return featherFallTooltip(stat, level);
+		}
+
 		return List.of(
 				Component.literal(stat.displayName()),
 				Component.literal("No effect description available.")
@@ -71,12 +87,59 @@ final class StatTooltipContent {
 		);
 	}
 
+	private static List<Component> reductionTooltip(
+			StatDefinition stat,
+			int level,
+			String description,
+			LevelBonus reduction
+	) {
+		if (level >= stat.maxLevel()) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal(description),
+					Component.literal("Current: " + formatReduction(reduction.value(level))),
+					Component.literal("Next: max level")
+			);
+		}
+
+		return List.of(
+				Component.literal(stat.displayName()),
+				Component.literal(description),
+				Component.literal("Current: " + formatReduction(reduction.value(level))),
+				Component.literal("Next: " + formatReduction(reduction.value(level + 1)))
+		);
+	}
+
+	private static List<Component> featherFallTooltip(StatDefinition stat, int level) {
+		if (level >= stat.maxLevel()) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal("Reduces fall damage and increases safe fall distance."),
+					Component.literal("Current: " + formatReduction(StatFormulas.specializedDamageReduction(level))),
+					Component.literal("Safe distance: +" + formatNumber(StatFormulas.featherFallSafeDistanceBonus(level)) + " blocks"),
+					Component.literal("Next: max level")
+			);
+		}
+
+		return List.of(
+				Component.literal(stat.displayName()),
+				Component.literal("Reduces fall damage and increases safe fall distance."),
+				Component.literal("Current: " + formatReduction(StatFormulas.specializedDamageReduction(level))),
+				Component.literal("Next: " + formatReduction(StatFormulas.specializedDamageReduction(level + 1))),
+				Component.literal("Safe distance: +" + formatNumber(StatFormulas.featherFallSafeDistanceBonus(level)) + " blocks")
+		);
+	}
+
 	private static String formatBonus(double value, String unit, boolean percent) {
 		if (percent) {
 			return "+" + formatNumber(value * 100.0D) + "% " + unit;
 		}
 
 		return "+" + formatNumber(value) + " " + unit;
+	}
+
+	private static String formatReduction(double value) {
+		return "-" + formatNumber(Math.min(1.0D, Math.max(0.0D, value)) * 100.0D) + "% damage";
 	}
 
 	private static String formatNumber(double value) {

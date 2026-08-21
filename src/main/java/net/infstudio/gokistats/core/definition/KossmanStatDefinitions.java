@@ -57,6 +57,34 @@ public final class KossmanStatDefinitions {
 			MAX_LEVEL
 	);
 
+	public static final StatDefinition PROTECTION = new StatDefinition(
+			new StatId("gokistats:protection"),
+			"protection",
+			"Protection",
+			MAX_LEVEL
+	);
+
+	public static final StatDefinition TEMPERING = new StatDefinition(
+			new StatId("gokistats:tempering"),
+			"tempering",
+			"Tempering",
+			MAX_LEVEL
+	);
+
+	public static final StatDefinition TOUGH_SKIN = new StatDefinition(
+			new StatId("gokistats:tough_skin"),
+			"tough_skin",
+			"Tough Skin",
+			MAX_LEVEL
+	);
+
+	public static final StatDefinition FEATHER_FALL = new StatDefinition(
+			new StatId("gokistats:feather_fall"),
+			"feather_fall",
+			"Feather Fall",
+			MAX_LEVEL
+	);
+
 	public static final List<StatDefinition> ALL = List.of(
 			MINING,
 			HEALTH,
@@ -64,7 +92,11 @@ public final class KossmanStatDefinitions {
 			CHOPPING,
 			TRIMMING,
 			SWORDSMANSHIP,
-			PUGILISM
+			PUGILISM,
+			PROTECTION,
+			TEMPERING,
+			TOUGH_SKIN,
+			FEATHER_FALL
 	);
 	private static final Map<String, StatDefinition> BY_COMMAND_NAME = ALL.stream()
 			.collect(Collectors.toUnmodifiableMap(StatDefinition::commandName, stat -> stat));
