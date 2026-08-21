@@ -3,9 +3,9 @@ package net.infstudio.gokistats.fabric.progression;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
-import net.infstudio.gokistats.core.definition.StatId;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
+import net.infstudio.gokistats.core.definition.StatId;
 import net.infstudio.gokistats.core.progression.StatDeathPenaltyPolicy;
 import net.infstudio.gokistats.core.progression.StatDeathPenaltyResult;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
@@ -15,16 +15,23 @@ public final class StatDeathPenaltyService {
 	private StatDeathPenaltyService() {
 	}
 
-	public static StatDeathPenaltyResult apply(ServerPlayer player) {
-		StatDeathPenaltyResult result = StatDeathPenaltyPolicy.calculate(currentLevels(player), new Random(player.getRandom().nextLong()));
+	public static StatDeathPenaltyResult apply(ServerPlayer oldPlayer, ServerPlayer newPlayer) {
+		Map<StatId, Integer> oldLevels = currentLevels(oldPlayer);
+		StatDeathPenaltyResult result = StatDeathPenaltyPolicy.calculate(oldLevels, new Random(newPlayer.getRandom().nextLong()));
 
-		for (Map.Entry<StatId, Integer> entry : result.lostLevels().entrySet()) {
-			StatDefinition stat = KossmanStatDefinitions.byId(entry.getKey()).orElse(null);
-			if (stat == null) {
-				continue;
+		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
+			int oldLevel = oldLevels.getOrDefault(stat.id(), 0);
+			int lostLevels = result.lostLevels().getOrDefault(stat.id(), 0);
+			int finalLevel = Math.max(
+					0,
+					Math.max(StatDeathPenaltyPolicy.MINIMUM_RETAINED_STAT_LEVEL, oldLevel - lostLevels)
+			);
+
+			if (oldLevel <= 0) {
+				finalLevel = 0;
 			}
 
-			KossmanPlayerStateStorage.decrementLevel(player, stat, entry.getValue(), StatDeathPenaltyPolicy.MINIMUM_RETAINED_STAT_LEVEL);
+			KossmanPlayerStateStorage.setLevel(newPlayer, stat, finalLevel);
 		}
 
 		return result;
