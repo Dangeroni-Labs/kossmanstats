@@ -14,7 +14,9 @@ This project started as a port of GokiStats to modern Minecraft versions, but it
 
 Currently under active development.
 
-The first focus is restoring the original core progression and stats on Fabric before rebuilding the GUI and more complex mechanics.
+The Fabric 26.2 port restores the core GokiStats progression system on modern Minecraft with rewritten internals, updated balance, persistent progression, respec, death penalties, configuration, and modernized stat mechanics.
+
+Future releases will focus more heavily on Kossman Stats-specific redesigns and new functionality.
 
 ## Credits
 
