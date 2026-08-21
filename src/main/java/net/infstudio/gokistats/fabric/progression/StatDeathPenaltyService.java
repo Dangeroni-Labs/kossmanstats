@@ -25,14 +25,7 @@ public final class StatDeathPenaltyService {
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
 			int oldLevel = oldLevels.getOrDefault(stat.id(), 0);
 			int lostLevels = result.lostLevels().getOrDefault(stat.id(), 0);
-			int finalLevel = Math.max(
-					0,
-					Math.max(tuning.deathPenalty().minimumRetainedStatLevel(), oldLevel - lostLevels)
-			);
-
-			if (oldLevel <= 0) {
-				finalLevel = 0;
-			}
+			int finalLevel = finalLevelAfterPenalty(oldLevel, lostLevels, tuning.deathPenalty().minimumRetainedStatLevel());
 
 			KossmanPlayerStateStorage.setLevel(newPlayer, stat, finalLevel);
 		}
@@ -61,5 +54,19 @@ public final class StatDeathPenaltyService {
 		}
 
 		return eligibleLevels;
+	}
+
+	static int finalLevelAfterPenalty(int oldLevel, int lostLevels, int minimumRetainedStatLevel) {
+		if (oldLevel <= 0) {
+			return 0;
+		}
+
+		int clampedOldLevel = Math.max(0, oldLevel);
+		int reducedLevel = Math.max(0, clampedOldLevel - Math.max(0, lostLevels));
+		if (clampedOldLevel <= minimumRetainedStatLevel) {
+			return reducedLevel;
+		}
+
+		return Math.max(minimumRetainedStatLevel, reducedLevel);
 	}
 }

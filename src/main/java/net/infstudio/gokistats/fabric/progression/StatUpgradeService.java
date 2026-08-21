@@ -28,7 +28,7 @@ public final class StatUpgradeService {
 			return StatChangeResult.failure(level, cost, stat.displayName() + " is already at max level " + maxLevel + ".");
 		}
 
-		if (totalExperience(player) < cost) {
+		if (currentTotalExperience(player) < cost) {
 			return StatChangeResult.failure(level, cost, "Not enough XP. Need " + cost + " XP.");
 		}
 
@@ -55,17 +55,26 @@ public final class StatUpgradeService {
 		return StatChangeResult.downgradeSuccess(stat, level, level - 1, refund);
 	}
 
-	private static int totalExperience(ServerPlayer player) {
-		int level = player.experienceLevel;
+	static int currentTotalExperience(ServerPlayer player) {
+		return totalExperience(player.experienceLevel, player.experienceProgress, player.getXpNeededForNextLevel());
+	}
 
-		if (level >= 0 && level <= 15) {
-			return (int) Math.round(Math.pow(level, 2) + 6 * level);
+	static int totalExperience(int level, float progress, int xpNeededForNextLevel) {
+		int clampedLevel = Math.max(0, level);
+		float clampedProgress = Math.clamp(progress, 0.0F, 1.0F);
+		int currentLevelFloor = experiencePointsForLevel(clampedLevel);
+		return currentLevelFloor + Math.max(0, Math.round(clampedProgress * Math.max(0, xpNeededForNextLevel)));
+	}
+
+	private static int experiencePointsForLevel(int level) {
+		if (level <= 15) {
+			return level * level + 6 * level;
 		}
 
 		if (level <= 30) {
-			return (int) Math.round(2.5D * Math.pow(level, 2) - 40.5D * level + 360.0D);
+			return (int) Math.floor(2.5D * level * level - 40.5D * level + 360.0D);
 		}
 
-		return (int) Math.round(4.5D * Math.pow(level, 2) - 162.5D * level + 2220.0D);
+		return (int) Math.floor(4.5D * level * level - 162.5D * level + 2220.0D);
 	}
 }

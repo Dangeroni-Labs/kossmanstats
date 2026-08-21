@@ -38,4 +38,9 @@ public final class ClientStatSnapshotCache {
 		latest = new StatSnapshot(knownLevels);
 		receivedSnapshot = true;
 	}
+
+	public static void clear() {
+		latest = StatSnapshot.EMPTY;
+		receivedSnapshot = false;
+	}
 }

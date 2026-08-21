@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.infstudio.gokistats.KossmanStats;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.formula.StatFormulas;
@@ -43,6 +44,7 @@ public final class BlockLootStatHooks {
 
 	public static void register() {
 		PlayerBlockBreakEvents.AFTER.register(BlockLootStatHooks::rememberBrokenBlock);
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> BROKEN_BLOCK_MARKERS.remove(handler.player.getUUID()));
 		LootTableEvents.MODIFY_DROPS.register((holder, context, drops) -> {
 			ServerPlayer player = player(context);
 			if (player == null) {

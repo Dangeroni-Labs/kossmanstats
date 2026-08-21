@@ -7,6 +7,7 @@ import net.infstudio.gokistats.fabric.config.KossmanServerConfigManager;
 import net.infstudio.gokistats.fabric.death.StatDeathPenaltyHandler;
 import net.infstudio.gokistats.fabric.health.HealthAttributeHandler;
 import net.infstudio.gokistats.fabric.loot.BlockLootStatHooks;
+import net.infstudio.gokistats.fabric.network.KossmanBalanceSync;
 import net.infstudio.gokistats.fabric.network.StatSnapshotSync;
 import net.infstudio.gokistats.fabric.network.StatUpgradeRequests;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
@@ -21,6 +22,7 @@ public final class KossmanStats implements ModInitializer {
 	public void onInitialize() {
 		KossmanPlayerStateStorage.register();
 		KossmanServerConfigManager.register();
+		KossmanBalanceSync.register();
 		StatSnapshotSync.register();
 		StatUpgradeRequests.register();
 		HealthAttributeHandler.register();
