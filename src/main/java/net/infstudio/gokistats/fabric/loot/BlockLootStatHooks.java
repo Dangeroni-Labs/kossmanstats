@@ -43,6 +43,7 @@ public final class BlockLootStatHooks {
 	}
 
 	public static void register() {
+		PlayerPlacedLootBlockTracker.register();
 		PlayerBlockBreakEvents.AFTER.register(BlockLootStatHooks::rememberBrokenBlock);
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> BROKEN_BLOCK_MARKERS.remove(handler.player.getUUID()));
 		LootTableEvents.MODIFY_DROPS.register((holder, context, drops) -> {
@@ -57,6 +58,15 @@ public final class BlockLootStatHooks {
 			}
 
 			if (!consumeBrokenBlockMarker(player, context, state)) {
+				return;
+			}
+
+			BlockPos blockPos = blockPos(context);
+			if (blockPos == null || !(player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+				return;
+			}
+
+			if (PlayerPlacedLootBlockTracker.consume(serverLevel, blockPos)) {
 				return;
 			}
 
@@ -191,13 +201,18 @@ public final class BlockLootStatHooks {
 		return state instanceof BlockState blockState ? blockState : null;
 	}
 
-	private static boolean consumeBrokenBlockMarker(ServerPlayer player, LootContext context, BlockState state) {
+	private static BlockPos blockPos(LootContext context) {
 		Object origin = context.getOptionalParameter(LootContextParams.ORIGIN);
-		if (!(origin instanceof net.minecraft.world.phys.Vec3 pos)) {
+		return origin instanceof net.minecraft.world.phys.Vec3 pos ? BlockPos.containing(pos) : null;
+	}
+
+	private static boolean consumeBrokenBlockMarker(ServerPlayer player, LootContext context, BlockState state) {
+		BlockPos blockPos = blockPos(context);
+		if (blockPos == null) {
 			return false;
 		}
 
-		String marker = brokenBlockMarker(BlockPos.containing(pos), state);
+		String marker = brokenBlockMarker(blockPos, state);
 		Set<String> markers = BROKEN_BLOCK_MARKERS.get(player.getUUID());
 		if (markers == null || !markers.remove(marker)) {
 			return false;
