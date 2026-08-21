@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+        name="description"
+        content="Kossman Stats release history and changelog."
+    />
+
+    <title>Changelog — Kossman Stats</title>
+
+    <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+    <div class="page">
+        <header class="site-header">
+            <a class="brand" href="./index.html">
+                Kossman Stats
+            </a>
+
+            <nav class="nav" aria-label="Main navigation">
+                <a class="active" href="./changelog.html">Changelog</a>
+                <a
+                    href="https://github.com/Dangeroni-Labs/kossmanstats"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    GitHub
+                </a>
+                <a
+                    href="https://modrinth.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    Modrinth
+                </a>
+            </nav>
+        </header>
+
+        <main class="changelog-page">
+            <header class="page-heading">
+                <p class="eyebrow">Release history</p>
+                <h1>Changelog</h1>
+
+                <p>
+                    Changes, fixes, and development milestones for
+                    Kossman Stats.
+                </p>
+            </header>
+
+            <div class="release-list">
+                <article class="release">
+                    <aside class="release-meta">
+                        <strong>0.1.0</strong>
+                        <span>First release</span>
+                    </aside>
+
+                    <div class="release-content">
+                        <h2>Initial Fabric 26.2 release</h2>
+
+                        <p>
+                            First public release of the modern GokiStats
+                            continuation.
+                        </p>
+
+                        <h3>Added</h3>
+
+                        <ul>
+                            <li>
+                                Modernized stat progression system.
+                            </li>
+                            <li>
+                                Persistent per-player stat progression.
+                            </li>
+                            <li>
+                                XP-based upgrades and stat level caps.
+                            </li>
+                            <li>
+                                Individual stat downgrade with 70% XP refund.
+                            </li>
+                            <li>
+                                Stat loss on death with weighted penalties.
+                            </li>
+                            <li>
+                                Server-side gameplay configuration.
+                            </li>
+                            <li>
+                                Client/server stat synchronization.
+                            </li>
+                            <li>
+                                Gathering, combat, defense, movement, survival,
+                                and loot-related stats.
+                            </li>
+                            <li>
+                                Modernized Kossman Stats interface.
+                            </li>
+                            <li>
+                                Custom stat icons with inactive, active, and
+                                maximum-level states.
+                            </li>
+                        </ul>
+
+                        <h3>Changed</h3>
+
+                        <ul>
+                            <li>
+                                Rebalanced legacy progression and stat formulas
+                                for modern Minecraft gameplay.
+                            </li>
+                            <li>
+                                Reworked legacy Forge systems into a modern
+                                Fabric architecture.
+                            </li>
+                            <li>
+                                Updated loot mechanics to use modern
+                                data-driven definitions where appropriate.
+                            </li>
+                        </ul>
+
+                        <h3>Fixed</h3>
+
+                        <ul>
+                            <li>
+                                Player state synchronization across death and
+                                respawn.
+                            </li>
+                            <li>
+                                XP affordability calculations around vanilla
+                                XP bar thresholds.
+                            </li>
+                            <li>
+                                Dedicated-server balance synchronization.
+                            </li>
+                            <li>
+                                Player-placed block farming for bonus
+                                loot-related stats.
+                            </li>
+                        </ul>
+
+                        <div class="release-links">
+                            <a
+                                href="https://github.com/Dangeroni-Labs/kossmanstats/releases/tag/v0.1.0"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                GitHub Release
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="release release-future">
+                    <aside class="release-meta">
+                        <strong>Next</strong>
+                        <span>In development</span>
+                    </aside>
+
+                    <div class="release-content">
+                        <h2>Post-port development</h2>
+
+                        <p>
+                            Future releases will move beyond direct legacy
+                            restoration and focus more heavily on the Kossman
+                            Stats identity.
+                        </p>
+
+                        <ul>
+                            <li>Further GUI rework.</li>
+                            <li>LibGui exploration.</li>
+                            <li>New and redesigned stats.</li>
+                            <li>Additional balance passes.</li>
+                            <li>NeoForge support.</li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <a href="./index.html">← Home</a>
+
+            <span>Kossman Stats</span>
+        </footer>
+    </div>
+</body>
+</html>
