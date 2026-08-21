@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.infstudio.gokistats.client.state.ClientStatSnapshotCache;
+import net.infstudio.gokistats.core.config.KossmanBalance;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.progression.StatProgression;
@@ -119,11 +120,12 @@ public final class KossmanStatsScreen extends Screen {
 			int level = ClientStatSnapshotCache.level(stat);
 			Button downgradeButton = downgradeButtons.get(stat);
 			Button upgradeButton = upgradeButtons.get(stat);
+			boolean enabled = KossmanBalance.current().isEnabled(stat);
 
 			downgradeButton.visible = ClientStatSnapshotCache.hasSnapshot();
-			downgradeButton.active = level > 0;
+			downgradeButton.active = enabled && level > 0;
 			upgradeButton.visible = ClientStatSnapshotCache.hasSnapshot();
-			upgradeButton.active = level < stat.maxLevel();
+			upgradeButton.active = enabled && level < KossmanBalance.current().maxStatLevel();
 		}
 	}
 
@@ -160,7 +162,11 @@ public final class KossmanStatsScreen extends Screen {
 	}
 
 	private String nextCostText(StatDefinition stat, int level) {
-		if (level >= stat.maxLevel()) {
+		if (!KossmanBalance.current().isEnabled(stat)) {
+			return "disabled";
+		}
+
+		if (level >= KossmanBalance.current().maxStatLevel()) {
 			return "max";
 		}
 

@@ -3,18 +3,16 @@ package net.infstudio.gokistats.core.progression;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.random.RandomGenerator;
+import net.infstudio.gokistats.core.config.KossmanBalance;
+import net.infstudio.gokistats.core.config.KossmanDeathPenaltyTuning;
 import net.infstudio.gokistats.core.definition.StatId;
 
 public final class StatDeathPenaltyPolicy {
-	public static final double DEATH_LOSS_RATE = 0.10D;
-	public static final int MINIMUM_DEATH_LOSS = 1;
-	public static final int MAXIMUM_DEATH_LOSS = 5;
-	public static final int MINIMUM_RETAINED_STAT_LEVEL = 1;
-
 	private StatDeathPenaltyPolicy() {
 	}
 
 	public static StatDeathPenaltyResult calculate(Map<StatId, Integer> currentLevels, RandomGenerator random) {
+		KossmanDeathPenaltyTuning tuning = KossmanBalance.current().deathPenalty();
 		Map<StatId, Integer> mutableLevels = new LinkedHashMap<>();
 		Map<StatId, Integer> lostLevels = new LinkedHashMap<>();
 		int totalInvestedLevels = 0;
@@ -23,9 +21,9 @@ public final class StatDeathPenaltyPolicy {
 		for (Map.Entry<StatId, Integer> entry : currentLevels.entrySet()) {
 			int level = Math.max(0, entry.getValue());
 			mutableLevels.put(entry.getKey(), level);
-			if (level > MINIMUM_RETAINED_STAT_LEVEL) {
+			if (level > tuning.minimumRetainedStatLevel()) {
 				totalInvestedLevels += level;
-				availableRemovableLevels += level - MINIMUM_RETAINED_STAT_LEVEL;
+				availableRemovableLevels += level - tuning.minimumRetainedStatLevel();
 			}
 		}
 
@@ -34,9 +32,9 @@ public final class StatDeathPenaltyPolicy {
 		}
 
 		int requestedLoss = clamp(
-				(int) Math.round(totalInvestedLevels * DEATH_LOSS_RATE),
-				MINIMUM_DEATH_LOSS,
-				MAXIMUM_DEATH_LOSS
+				(int) Math.round(totalInvestedLevels * tuning.lossRate()),
+				tuning.minimumLoss(),
+				tuning.maximumLoss()
 		);
 		int appliedLoss = Math.min(requestedLoss, availableRemovableLevels);
 
@@ -57,7 +55,7 @@ public final class StatDeathPenaltyPolicy {
 		int totalWeight = 0;
 
 		for (int level : currentLevels.values()) {
-			if (level > MINIMUM_RETAINED_STAT_LEVEL) {
+			if (level > KossmanBalance.current().deathPenalty().minimumRetainedStatLevel()) {
 				totalWeight += level;
 			}
 		}
@@ -69,7 +67,7 @@ public final class StatDeathPenaltyPolicy {
 		int target = random.nextInt(totalWeight);
 		for (Map.Entry<StatId, Integer> entry : currentLevels.entrySet()) {
 			int level = entry.getValue();
-			if (level <= MINIMUM_RETAINED_STAT_LEVEL) {
+			if (level <= KossmanBalance.current().deathPenalty().minimumRetainedStatLevel()) {
 				continue;
 			}
 

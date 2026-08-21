@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:dirt",
+    "minecraft:sand",
+    "minecraft:tall_grass",
+    "minecraft:oak_leaves"
+  ]
+}

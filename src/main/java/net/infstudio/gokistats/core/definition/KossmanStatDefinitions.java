@@ -6,146 +6,124 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class KossmanStatDefinitions {
-	private static final int MAX_LEVEL = 50;
-
 	public static final StatDefinition MINING = new StatDefinition(
 			new StatId("gokistats:mining"),
 			"mining",
-			"Mining",
-			MAX_LEVEL
+			"Mining"
 	);
 
 	public static final StatDefinition HEALTH = new StatDefinition(
 			new StatId("gokistats:health"),
 			"health",
-			"Health",
-			MAX_LEVEL
+			"Health"
 	);
 
 	public static final StatDefinition DIGGING = new StatDefinition(
 			new StatId("gokistats:digging"),
 			"digging",
-			"Digging",
-			MAX_LEVEL
+			"Digging"
 	);
 
 	public static final StatDefinition CHOPPING = new StatDefinition(
 			new StatId("gokistats:chopping"),
 			"chopping",
-			"Chopping",
-			MAX_LEVEL
+			"Chopping"
 	);
 
 	public static final StatDefinition TRIMMING = new StatDefinition(
 			new StatId("gokistats:trimming"),
 			"trimming",
-			"Trimming",
-			MAX_LEVEL
+			"Trimming"
 	);
 
 	public static final StatDefinition SWORDSMANSHIP = new StatDefinition(
 			new StatId("gokistats:swordsmanship"),
 			"swordsmanship",
-			"Swordsmanship",
-			MAX_LEVEL
+			"Swordsmanship"
 	);
 
 	public static final StatDefinition PUGILISM = new StatDefinition(
 			new StatId("gokistats:pugilism"),
 			"pugilism",
-			"Pugilism",
-			MAX_LEVEL
+			"Pugilism"
 	);
 
 	public static final StatDefinition BOWMANSHIP = new StatDefinition(
 			new StatId("gokistats:bowmanship"),
 			"bowmanship",
-			"Bowmanship",
-			MAX_LEVEL
+			"Bowmanship"
 	);
 
 	public static final StatDefinition PROTECTION = new StatDefinition(
 			new StatId("gokistats:protection"),
 			"protection",
-			"Protection",
-			MAX_LEVEL
+			"Protection"
 	);
 
 	public static final StatDefinition TEMPERING = new StatDefinition(
 			new StatId("gokistats:tempering"),
 			"tempering",
-			"Tempering",
-			MAX_LEVEL
+			"Tempering"
 	);
 
 	public static final StatDefinition TOUGH_SKIN = new StatDefinition(
 			new StatId("gokistats:tough_skin"),
 			"tough_skin",
-			"Tough Skin",
-			MAX_LEVEL
+			"Tough Skin"
 	);
 
 	public static final StatDefinition FEATHER_FALL = new StatDefinition(
 			new StatId("gokistats:feather_fall"),
 			"feather_fall",
-			"Feather Fall",
-			MAX_LEVEL
+			"Feather Fall"
 	);
 
 	public static final StatDefinition LEAPER_H = new StatDefinition(
 			new StatId("gokistats:leaper_h"),
 			"leaper_h",
-			"Leaper H",
-			MAX_LEVEL
+			"Leaper H"
 	);
 
 	public static final StatDefinition LEAPER_V = new StatDefinition(
 			new StatId("gokistats:leaper_v"),
 			"leaper_v",
-			"Leaper V",
-			MAX_LEVEL
+			"Leaper V"
 	);
 
 	public static final StatDefinition CLIMBING = new StatDefinition(
 			new StatId("gokistats:climbing"),
 			"climbing",
-			"Climbing",
-			MAX_LEVEL
+			"Climbing"
 	);
 
 	public static final StatDefinition STEADY_GUARD = new StatDefinition(
 			new StatId("gokistats:steady_guard"),
 			"steady_guard",
-			"Steady Guard",
-			MAX_LEVEL
+			"Steady Guard"
 	);
 
 	public static final StatDefinition REAPER = new StatDefinition(
 			new StatId("gokistats:reaper"),
 			"reaper",
-			"Reaper",
-			MAX_LEVEL
+			"Reaper"
 	);
 
 	public static final StatDefinition ROLL = new StatDefinition(
 			new StatId("gokistats:roll"),
 			"roll",
-			"Roll",
-			MAX_LEVEL
+			"Roll"
 	);
 
 	public static final StatDefinition TREASURE_FINDER = new StatDefinition(
 			new StatId("gokistats:treasure_finder"),
 			"treasure_finder",
-			"Treasure Finder",
-			MAX_LEVEL
+			"Treasure Finder"
 	);
 
 	public static final StatDefinition MINING_MAGICIAN = new StatDefinition(
 			new StatId("gokistats:mining_magician"),
 			"mining_magician",
-			"Mining Magician",
-			MAX_LEVEL
+			"Mining Magician"
 	);
 
 	public static final List<StatDefinition> ALL = List.of(

@@ -16,6 +16,7 @@ public final class KossmanTags {
 	public static final TagKey<Item> BOWS = itemTag("bow");
 	public static final TagKey<Item> MAGICIAN_ITEMS = itemTag("magician_item");
 	public static final TagKey<Block> MAGICIAN_ORES = blockTag("magician_ore");
+	public static final TagKey<Block> TREASURE_FINDER_BLOCKS = blockTag("treasure_finder");
 
 	private KossmanTags() {
 	}

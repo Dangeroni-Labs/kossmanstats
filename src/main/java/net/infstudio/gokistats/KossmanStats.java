@@ -3,6 +3,7 @@ package net.infstudio.gokistats;
 import net.fabricmc.api.ModInitializer;
 import net.infstudio.gokistats.fabric.command.KossmanStatsCommands;
 import net.infstudio.gokistats.fabric.combat.SteadyGuardAttributeHandler;
+import net.infstudio.gokistats.fabric.config.KossmanServerConfigManager;
 import net.infstudio.gokistats.fabric.death.StatDeathPenaltyHandler;
 import net.infstudio.gokistats.fabric.health.HealthAttributeHandler;
 import net.infstudio.gokistats.fabric.loot.BlockLootStatHooks;
@@ -19,6 +20,7 @@ public final class KossmanStats implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		KossmanPlayerStateStorage.register();
+		KossmanServerConfigManager.register();
 		StatSnapshotSync.register();
 		StatUpgradeRequests.register();
 		HealthAttributeHandler.register();

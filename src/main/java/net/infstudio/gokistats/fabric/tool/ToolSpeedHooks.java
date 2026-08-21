@@ -12,10 +12,10 @@ import net.minecraft.world.item.ItemStack;
 
 public final class ToolSpeedHooks {
 	private static final List<ToolSpeedStat> TOOL_SPEED_STATS = List.of(
-			new ToolSpeedStat(KossmanStatDefinitions.MINING, KossmanTags.MINING_TOOLS, StatFormulas::toolSpeedBonus),
-			new ToolSpeedStat(KossmanStatDefinitions.DIGGING, KossmanTags.DIGGING_TOOLS, StatFormulas::toolSpeedBonus),
-			new ToolSpeedStat(KossmanStatDefinitions.CHOPPING, KossmanTags.CHOPPING_TOOLS, StatFormulas::toolSpeedBonus),
-			new ToolSpeedStat(KossmanStatDefinitions.TRIMMING, KossmanTags.TRIMMING_TOOLS, StatFormulas::toolSpeedBonus)
+			new ToolSpeedStat(KossmanStatDefinitions.MINING, KossmanTags.MINING_TOOLS, level -> StatFormulas.toolSpeedBonus(KossmanStatDefinitions.MINING, level)),
+			new ToolSpeedStat(KossmanStatDefinitions.DIGGING, KossmanTags.DIGGING_TOOLS, level -> StatFormulas.toolSpeedBonus(KossmanStatDefinitions.DIGGING, level)),
+			new ToolSpeedStat(KossmanStatDefinitions.CHOPPING, KossmanTags.CHOPPING_TOOLS, level -> StatFormulas.toolSpeedBonus(KossmanStatDefinitions.CHOPPING, level)),
+			new ToolSpeedStat(KossmanStatDefinitions.TRIMMING, KossmanTags.TRIMMING_TOOLS, level -> StatFormulas.toolSpeedBonus(KossmanStatDefinitions.TRIMMING, level))
 	);
 
 	private ToolSpeedHooks() {

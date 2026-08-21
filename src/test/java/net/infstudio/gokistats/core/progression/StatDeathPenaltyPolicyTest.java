@@ -7,11 +7,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.random.RandomGenerator;
+import net.infstudio.gokistats.core.config.KossmanBalance;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatId;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 class StatDeathPenaltyPolicyTest {
+	@AfterEach
+	void resetBalance() {
+		KossmanBalance.reset();
+	}
+
 	@Test
 	void returnsNoLossWhenNoStatsAreUpgraded() {
 		StatDeathPenaltyResult result = StatDeathPenaltyPolicy.calculate(levels(), new Random(1L));
@@ -138,7 +145,7 @@ class StatDeathPenaltyPolicyTest {
 
 	private static int removableLevels(Map<StatId, Integer> levels) {
 		return levels.values().stream()
-				.mapToInt(level -> Math.max(0, level - StatDeathPenaltyPolicy.MINIMUM_RETAINED_STAT_LEVEL))
+				.mapToInt(level -> Math.max(0, level - KossmanBalance.current().deathPenalty().minimumRetainedStatLevel()))
 				.sum();
 	}
 

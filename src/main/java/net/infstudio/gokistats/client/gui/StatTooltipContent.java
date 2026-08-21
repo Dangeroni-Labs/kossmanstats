@@ -2,6 +2,7 @@ package net.infstudio.gokistats.client.gui;
 
 import java.util.List;
 import java.util.Locale;
+import net.infstudio.gokistats.core.config.KossmanBalance;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.formula.StatFormulas;
@@ -13,20 +14,28 @@ final class StatTooltipContent {
 	}
 
 	static List<Component> forStat(StatDefinition stat, int level) {
+		if (!KossmanBalance.current().isEnabled(stat)) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal("Disabled by server configuration."),
+					Component.literal("Stored level: " + level)
+			);
+		}
+
 		if (stat.equals(KossmanStatDefinitions.MINING)) {
-			return bonusTooltip(stat, level, "Increases mining speed with pickaxes.", "speed", StatFormulas::toolSpeedBonus, true);
+			return bonusTooltip(stat, level, "Increases mining speed with pickaxes.", "speed", currentLevel -> StatFormulas.toolSpeedBonus(stat, currentLevel), true);
 		}
 
 		if (stat.equals(KossmanStatDefinitions.DIGGING)) {
-			return bonusTooltip(stat, level, "Increases digging speed with shovels.", "speed", StatFormulas::toolSpeedBonus, true);
+			return bonusTooltip(stat, level, "Increases digging speed with shovels.", "speed", currentLevel -> StatFormulas.toolSpeedBonus(stat, currentLevel), true);
 		}
 
 		if (stat.equals(KossmanStatDefinitions.CHOPPING)) {
-			return bonusTooltip(stat, level, "Increases chopping speed with axes.", "speed", StatFormulas::toolSpeedBonus, true);
+			return bonusTooltip(stat, level, "Increases chopping speed with axes.", "speed", currentLevel -> StatFormulas.toolSpeedBonus(stat, currentLevel), true);
 		}
 
 		if (stat.equals(KossmanStatDefinitions.TRIMMING)) {
-			return bonusTooltip(stat, level, "Increases trimming speed with shears.", "speed", StatFormulas::toolSpeedBonus, true);
+			return bonusTooltip(stat, level, "Increases trimming speed with shears.", "speed", currentLevel -> StatFormulas.toolSpeedBonus(stat, currentLevel), true);
 		}
 
 		if (stat.equals(KossmanStatDefinitions.SWORDSMANSHIP)) {
@@ -100,6 +109,14 @@ final class StatTooltipContent {
 	}
 
 	static List<Component> forDowngrade(StatDefinition stat, int level) {
+		if (!KossmanBalance.current().isEnabled(stat)) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal("Disabled by server configuration."),
+					Component.literal("Downgrade unavailable.")
+			);
+		}
+
 		if (level <= 0) {
 			return List.of(
 					Component.literal(stat.displayName()),
@@ -114,7 +131,7 @@ final class StatTooltipContent {
 						"Refund: "
 								+ StatProgression.downgradeRefundForLevel(level)
 								+ " XP ("
-								+ formatNumber(StatProgression.DOWNGRADE_REFUND_RATE * 100.0D)
+								+ formatNumber(KossmanBalance.current().downgradeRefundRate() * 100.0D)
 								+ "%)"
 				)
 		);
@@ -128,7 +145,7 @@ final class StatTooltipContent {
 			LevelBonus bonus,
 			boolean percent
 	) {
-		if (level >= stat.maxLevel()) {
+		if (level >= KossmanBalance.current().maxStatLevel()) {
 			return List.of(
 					Component.literal(stat.displayName()),
 					Component.literal(description),
@@ -151,7 +168,7 @@ final class StatTooltipContent {
 			String description,
 			LevelBonus reduction
 	) {
-		if (level >= stat.maxLevel()) {
+		if (level >= KossmanBalance.current().maxStatLevel()) {
 			return List.of(
 					Component.literal(stat.displayName()),
 					Component.literal(description),
@@ -169,7 +186,7 @@ final class StatTooltipContent {
 	}
 
 	private static List<Component> featherFallTooltip(StatDefinition stat, int level) {
-		if (level >= stat.maxLevel()) {
+		if (level >= KossmanBalance.current().maxStatLevel()) {
 			return List.of(
 					Component.literal(stat.displayName()),
 					Component.literal("Reduces fall damage and increases safe fall distance."),
@@ -189,7 +206,7 @@ final class StatTooltipContent {
 	}
 
 	private static List<Component> steadyGuardTooltip(StatDefinition stat, int level) {
-		if (level >= stat.maxLevel()) {
+		if (level >= KossmanBalance.current().maxStatLevel()) {
 			return List.of(
 					Component.literal(stat.displayName()),
 					Component.literal("Increases knockback resistance while actively blocking."),
@@ -208,7 +225,7 @@ final class StatTooltipContent {
 
 	private static List<Component> reaperTooltip(StatDefinition stat, int level) {
 		String capText = formatNumber(StatFormulas.reaperMaxTargetHealth());
-		if (level >= stat.maxLevel()) {
+		if (level >= KossmanBalance.current().maxStatLevel()) {
 			return List.of(
 					Component.literal(stat.displayName()),
 					Component.literal("Chance to execute weakened non-player targets."),
@@ -228,7 +245,7 @@ final class StatTooltipContent {
 	}
 
 	private static List<Component> rollTooltip(StatDefinition stat, int level) {
-		if (level >= stat.maxLevel()) {
+		if (level >= KossmanBalance.current().maxStatLevel()) {
 			return List.of(
 					Component.literal(stat.displayName()),
 					Component.literal("Chance to fully evade eligible direct attacks."),
@@ -252,7 +269,7 @@ final class StatTooltipContent {
 			LevelBonus chance,
 			String label
 	) {
-		if (level >= stat.maxLevel()) {
+		if (level >= KossmanBalance.current().maxStatLevel()) {
 			return List.of(
 					Component.literal(stat.displayName()),
 					Component.literal(description),

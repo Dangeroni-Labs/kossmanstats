@@ -1,5 +1,6 @@
 package net.infstudio.gokistats.fabric.progression;
 
+import net.infstudio.gokistats.core.config.KossmanBalance;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.progression.StatProgression;
 import net.infstudio.gokistats.core.result.StatChangeResult;
@@ -15,11 +16,16 @@ public final class StatUpgradeService {
 	}
 
 	public static StatChangeResult upgrade(ServerPlayer player, StatDefinition stat) {
+		if (!KossmanBalance.current().isEnabled(stat)) {
+			return StatChangeResult.failure(KossmanPlayerStateStorage.getLevel(player, stat), 0, stat.displayName() + " is disabled on this server.");
+		}
+
 		int level = KossmanPlayerStateStorage.getLevel(player, stat);
 		int cost = StatProgression.upgradeCostForLevel(level);
+		int maxLevel = KossmanBalance.current().maxStatLevel();
 
-		if (level >= stat.maxLevel()) {
-			return StatChangeResult.failure(level, cost, stat.displayName() + " is already at max level " + stat.maxLevel() + ".");
+		if (level >= maxLevel) {
+			return StatChangeResult.failure(level, cost, stat.displayName() + " is already at max level " + maxLevel + ".");
 		}
 
 		if (totalExperience(player) < cost) {
@@ -33,6 +39,10 @@ public final class StatUpgradeService {
 	}
 
 	public static StatChangeResult downgrade(ServerPlayer player, StatDefinition stat) {
+		if (!KossmanBalance.current().isEnabled(stat)) {
+			return StatChangeResult.failure(KossmanPlayerStateStorage.getLevel(player, stat), 0, stat.displayName() + " is disabled on this server.");
+		}
+
 		int level = KossmanPlayerStateStorage.getLevel(player, stat);
 		int refund = StatProgression.downgradeRefundForLevel(level);
 

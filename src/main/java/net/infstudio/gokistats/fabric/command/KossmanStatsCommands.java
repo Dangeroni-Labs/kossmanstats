@@ -3,6 +3,7 @@ package net.infstudio.gokistats.fabric.command;
 import static net.minecraft.commands.Commands.literal;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.infstudio.gokistats.core.config.KossmanBalance;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
@@ -39,9 +40,10 @@ public final class KossmanStatsCommands {
 					var player = context.getSource().getPlayerOrException();
 					int level = KossmanPlayerStateStorage.getLevel(player, stat);
 					int cost = StatUpgradeService.nextUpgradeCost(player, stat);
+					String status = KossmanBalance.current().isEnabled(stat) ? "" : " (disabled)";
 
 					context.getSource().sendSuccess(
-							() -> Component.literal(stat.displayName() + " level: " + level + ", next cost: " + cost + " XP"),
+							() -> Component.literal(stat.displayName() + status + " level: " + level + ", next cost: " + cost + " XP"),
 							false
 					);
 					return level;

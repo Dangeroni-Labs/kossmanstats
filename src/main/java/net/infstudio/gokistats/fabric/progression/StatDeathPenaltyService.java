@@ -3,6 +3,8 @@ package net.infstudio.gokistats.fabric.progression;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
+import net.infstudio.gokistats.core.config.KossmanBalance;
+import net.infstudio.gokistats.core.config.KossmanBalanceTuning;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.definition.StatId;
@@ -16,15 +18,16 @@ public final class StatDeathPenaltyService {
 	}
 
 	public static StatDeathPenaltyResult apply(ServerPlayer oldPlayer, ServerPlayer newPlayer) {
-		Map<StatId, Integer> oldLevels = currentLevels(oldPlayer);
-		StatDeathPenaltyResult result = StatDeathPenaltyPolicy.calculate(oldLevels, new Random(newPlayer.getRandom().nextLong()));
+		Map<StatId, Integer> oldLevels = storedLevels(oldPlayer);
+		KossmanBalanceTuning tuning = KossmanBalance.current();
+		StatDeathPenaltyResult result = StatDeathPenaltyPolicy.calculate(eligibleLevels(oldLevels), new Random(newPlayer.getRandom().nextLong()));
 
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
 			int oldLevel = oldLevels.getOrDefault(stat.id(), 0);
 			int lostLevels = result.lostLevels().getOrDefault(stat.id(), 0);
 			int finalLevel = Math.max(
 					0,
-					Math.max(StatDeathPenaltyPolicy.MINIMUM_RETAINED_STAT_LEVEL, oldLevel - lostLevels)
+					Math.max(tuning.deathPenalty().minimumRetainedStatLevel(), oldLevel - lostLevels)
 			);
 
 			if (oldLevel <= 0) {
@@ -37,7 +40,7 @@ public final class StatDeathPenaltyService {
 		return result;
 	}
 
-	private static Map<StatId, Integer> currentLevels(ServerPlayer player) {
+	private static Map<StatId, Integer> storedLevels(ServerPlayer player) {
 		Map<StatId, Integer> levels = new LinkedHashMap<>();
 
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
@@ -45,5 +48,18 @@ public final class StatDeathPenaltyService {
 		}
 
 		return levels;
+	}
+
+	private static Map<StatId, Integer> eligibleLevels(Map<StatId, Integer> storedLevels) {
+		Map<StatId, Integer> eligibleLevels = new LinkedHashMap<>();
+
+		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
+			int level = KossmanBalance.current().isEnabled(stat)
+					? storedLevels.getOrDefault(stat.id(), 0)
+					: 0;
+			eligibleLevels.put(stat.id(), level);
+		}
+
+		return eligibleLevels;
 	}
 }

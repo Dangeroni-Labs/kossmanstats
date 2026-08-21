@@ -71,6 +71,10 @@ public final class BlockLootStatHooks {
 	}
 
 	private static void applyTreasureFinder(ServerPlayer player, LootContext context, BlockState state, List<ItemStack> drops) {
+		if (!state.is(KossmanTags.TREASURE_FINDER_BLOCKS)) {
+			return;
+		}
+
 		int level = KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.TREASURE_FINDER);
 		double chance = StatFormulas.treasureFinderProcChance(level);
 		if (chance <= 0.0D || context.getRandom().nextDouble() >= chance) {
