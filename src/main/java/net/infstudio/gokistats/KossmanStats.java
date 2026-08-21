@@ -2,6 +2,7 @@ package net.infstudio.gokistats;
 
 import net.fabricmc.api.ModInitializer;
 import net.infstudio.gokistats.fabric.command.KossmanStatsCommands;
+import net.infstudio.gokistats.fabric.combat.SteadyGuardAttributeHandler;
 import net.infstudio.gokistats.fabric.health.HealthAttributeHandler;
 import net.infstudio.gokistats.fabric.network.StatSnapshotSync;
 import net.infstudio.gokistats.fabric.network.StatUpgradeRequests;
@@ -19,6 +20,7 @@ public final class KossmanStats implements ModInitializer {
 		StatSnapshotSync.register();
 		StatUpgradeRequests.register();
 		HealthAttributeHandler.register();
+		SteadyGuardAttributeHandler.register();
 		KossmanStatsCommands.register();
 		LOGGER.info("Kossman Stats initialized.");
 	}

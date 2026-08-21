@@ -56,6 +56,18 @@ final class StatTooltipContent {
 			return featherFallTooltip(stat, level);
 		}
 
+		if (stat.equals(KossmanStatDefinitions.STEADY_GUARD)) {
+			return steadyGuardTooltip(stat, level);
+		}
+
+		if (stat.equals(KossmanStatDefinitions.REAPER)) {
+			return reaperTooltip(stat, level);
+		}
+
+		if (stat.equals(KossmanStatDefinitions.ROLL)) {
+			return rollTooltip(stat, level);
+		}
+
 		return List.of(
 				Component.literal(stat.displayName()),
 				Component.literal("No effect description available.")
@@ -130,6 +142,63 @@ final class StatTooltipContent {
 		);
 	}
 
+	private static List<Component> steadyGuardTooltip(StatDefinition stat, int level) {
+		if (level >= stat.maxLevel()) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal("Increases knockback resistance while actively blocking."),
+					Component.literal("Current: +" + formatPercent(StatFormulas.steadyGuardKnockbackResistanceBonus(level)) + " knockback resistance while blocking"),
+					Component.literal("Next: max level")
+			);
+		}
+
+		return List.of(
+				Component.literal(stat.displayName()),
+				Component.literal("Increases knockback resistance while actively blocking."),
+				Component.literal("Current: +" + formatPercent(StatFormulas.steadyGuardKnockbackResistanceBonus(level)) + " knockback resistance while blocking"),
+				Component.literal("Next: +" + formatPercent(StatFormulas.steadyGuardKnockbackResistanceBonus(level + 1)) + " knockback resistance while blocking")
+		);
+	}
+
+	private static List<Component> reaperTooltip(StatDefinition stat, int level) {
+		String capText = formatNumber(StatFormulas.reaperMaxTargetHealth());
+		if (level >= stat.maxLevel()) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal("Chance to execute weakened non-player targets."),
+					Component.literal("Current: " + formatPercent(StatFormulas.reaperChance(level)) + " chance below " + formatPercent(StatFormulas.reaperHealthThreshold(level)) + " target health"),
+					Component.literal("Targets: non-player living targets up to " + capText + " max HP"),
+					Component.literal("Next: max level")
+			);
+		}
+
+		return List.of(
+				Component.literal(stat.displayName()),
+				Component.literal("Chance to execute weakened non-player targets."),
+				Component.literal("Current: " + formatPercent(StatFormulas.reaperChance(level)) + " chance below " + formatPercent(StatFormulas.reaperHealthThreshold(level)) + " target health"),
+				Component.literal("Next: " + formatPercent(StatFormulas.reaperChance(level + 1)) + " chance below " + formatPercent(StatFormulas.reaperHealthThreshold(level + 1)) + " target health"),
+				Component.literal("Targets: non-player living targets up to " + capText + " max HP")
+		);
+	}
+
+	private static List<Component> rollTooltip(StatDefinition stat, int level) {
+		if (level >= stat.maxLevel()) {
+			return List.of(
+					Component.literal(stat.displayName()),
+					Component.literal("Chance to fully evade eligible direct attacks."),
+					Component.literal("Current: " + formatPercent(StatFormulas.rollEvadeChance(level)) + " evade chance"),
+					Component.literal("Next: max level")
+			);
+		}
+
+		return List.of(
+				Component.literal(stat.displayName()),
+				Component.literal("Chance to fully evade eligible direct attacks."),
+				Component.literal("Current: " + formatPercent(StatFormulas.rollEvadeChance(level)) + " evade chance"),
+				Component.literal("Next: " + formatPercent(StatFormulas.rollEvadeChance(level + 1)) + " evade chance")
+		);
+	}
+
 	private static String formatBonus(double value, String unit, boolean percent) {
 		if (percent) {
 			return "+" + formatNumber(value * 100.0D) + "% " + unit;
@@ -140,6 +209,10 @@ final class StatTooltipContent {
 
 	private static String formatReduction(double value) {
 		return "-" + formatNumber(Math.min(1.0D, Math.max(0.0D, value)) * 100.0D) + "% damage";
+	}
+
+	private static String formatPercent(double value) {
+		return formatNumber(Math.max(0.0D, value) * 100.0D) + "%";
 	}
 
 	private static String formatNumber(double value) {

@@ -7,6 +7,9 @@ import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.infstudio.gokistats.fabric.tag.KossmanTags;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -33,6 +36,25 @@ public final class CombatDamageHooks {
 		}
 
 		return (float) (originalDamage + pugilismBonus);
+	}
+
+	public static float applyReaper(ServerPlayer player, Entity target, DamageSource source, float damage) {
+		if (damage <= 0.0F || !(target instanceof LivingEntity livingTarget) || livingTarget instanceof net.minecraft.world.entity.player.Player) {
+			return damage;
+		}
+
+		int level = KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.REAPER);
+		if (!isReaperEligibleTarget(livingTarget, level)) {
+			return damage;
+		}
+
+		double chance = StatFormulas.reaperChance(level);
+		if (chance <= 0.0D || player.getRandom().nextDouble() >= chance) {
+			return damage;
+		}
+
+		float finishingDamage = livingTarget.getHealth() + livingTarget.getAbsorptionAmount() + 1.0F;
+		return Math.max(damage, finishingDamage);
 	}
 
 	private static double swordsmanshipBonus(ServerPlayer player, ItemStack stack) {
@@ -63,5 +85,22 @@ public final class CombatDamageHooks {
 
 	private static boolean isAttackDamage(Holder<Attribute> attribute) {
 		return attribute.equals(Attributes.ATTACK_DAMAGE);
+	}
+
+	private static boolean isReaperEligibleTarget(LivingEntity target, int level) {
+		if (!target.isAlive()) {
+			return false;
+		}
+
+		if (target.getMaxHealth() > StatFormulas.reaperMaxTargetHealth()) {
+			return false;
+		}
+
+		double threshold = StatFormulas.reaperHealthThreshold(level);
+		if (threshold <= 0.0D) {
+			return false;
+		}
+
+		return target.getHealth() <= target.getMaxHealth() * threshold;
 	}
 }

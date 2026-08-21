@@ -18,6 +18,15 @@ public final class StatFormulas {
 	private static final double FEATHER_FALL_CURVE_EXPONENT = 1.11D;
 	private static final double FEATHER_FALL_SAFE_DISTANCE_BONUS_PER_LEVEL = 0.1D;
 	private static final double MAX_DAMAGE_REDUCTION = 0.95D;
+	private static final double STEADY_GUARD_MAX_KNOCKBACK_RESISTANCE = 0.60D;
+	private static final double STEADY_GUARD_EXPONENT = 1.15D;
+	private static final double REAPER_MAX_CHANCE = 0.12D;
+	private static final double REAPER_CHANCE_EXPONENT = 1.12D;
+	private static final double REAPER_MAX_HEALTH_THRESHOLD = 0.30D;
+	private static final double REAPER_THRESHOLD_EXPONENT = 1.08D;
+	private static final double REAPER_MAX_TARGET_HEALTH = 40.0D;
+	private static final double ROLL_MAX_EVADE_CHANCE = 0.18D;
+	private static final double ROLL_EVADE_EXPONENT = 1.18D;
 
 	private StatFormulas() {
 	}
@@ -70,6 +79,26 @@ public final class StatFormulas {
 		return Math.max(0, level) * FEATHER_FALL_SAFE_DISTANCE_BONUS_PER_LEVEL;
 	}
 
+	public static double steadyGuardKnockbackResistanceBonus(int level) {
+		return boundedCurve(level, STEADY_GUARD_MAX_KNOCKBACK_RESISTANCE, STEADY_GUARD_EXPONENT);
+	}
+
+	public static double reaperChance(int level) {
+		return boundedCurve(level, REAPER_MAX_CHANCE, REAPER_CHANCE_EXPONENT);
+	}
+
+	public static double reaperHealthThreshold(int level) {
+		return boundedCurve(level, REAPER_MAX_HEALTH_THRESHOLD, REAPER_THRESHOLD_EXPONENT);
+	}
+
+	public static double reaperMaxTargetHealth() {
+		return REAPER_MAX_TARGET_HEALTH;
+	}
+
+	public static double rollEvadeChance(int level) {
+		return boundedCurve(level, ROLL_MAX_EVADE_CHANCE, ROLL_EVADE_EXPONENT);
+	}
+
 	public static float applyDamageReduction(float amount, double reduction) {
 		if (amount <= 0.0F || reduction <= 0.0D) {
 			return amount;
@@ -80,12 +109,20 @@ public final class StatFormulas {
 	}
 
 	private static double defensiveDamageReduction(int level, double levelCapReduction, double curveExponent) {
+		return boundedCurve(level, levelCapReduction, curveExponent, MAX_DAMAGE_REDUCTION);
+	}
+
+	private static double boundedCurve(int level, double maxValue, double exponent) {
+		return boundedCurve(level, maxValue, exponent, maxValue);
+	}
+
+	private static double boundedCurve(int level, double maxValue, double exponent, double upperBound) {
 		if (level <= 0) {
 			return 0.0D;
 		}
 
 		double normalized = Math.min(level, MAX_DEFENSIVE_LEVEL) / (double) MAX_DEFENSIVE_LEVEL;
-		return Math.min(MAX_DAMAGE_REDUCTION, levelCapReduction * Math.pow(normalized, curveExponent));
+		return Math.min(upperBound, maxValue * Math.pow(normalized, exponent));
 	}
 
 	private static double normalizedLevel(int level) {

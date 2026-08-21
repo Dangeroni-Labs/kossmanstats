@@ -20,6 +20,10 @@ public final class IncomingDamageReductionHooks {
 			return amount;
 		}
 
+		if (shouldRoll(player, source)) {
+			return 0.0F;
+		}
+
 		double reduction = damageReduction(player, source);
 		return StatFormulas.applyDamageReduction(amount, reduction);
 	}
@@ -60,5 +64,27 @@ public final class IncomingDamageReductionHooks {
 	private static double jumpBoostSafeDistanceBonus(ServerPlayer player) {
 		var effect = player.getEffect(MobEffects.JUMP_BOOST);
 		return effect == null ? 0.0D : effect.getAmplifier() + 1.0D;
+	}
+
+	private static boolean shouldRoll(ServerPlayer player, DamageSource source) {
+		if (!isRollEligible(source)) {
+			return false;
+		}
+
+		int level = KossmanPlayerStateStorage.getLevel(player, KossmanStatDefinitions.ROLL);
+		double chance = StatFormulas.rollEvadeChance(level);
+		return chance > 0.0D && player.getRandom().nextDouble() < chance;
+	}
+
+	private static boolean isRollEligible(DamageSource source) {
+		if (source.getEntity() == null && source.getDirectEntity() == null) {
+			return false;
+		}
+
+		if (source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypeTags.IS_EXPLOSION) || source.is(DamageTypes.FALL)) {
+			return false;
+		}
+
+		return !source.is(DamageTypes.MAGIC) && !source.is(DamageTypes.INDIRECT_MAGIC);
 	}
 }

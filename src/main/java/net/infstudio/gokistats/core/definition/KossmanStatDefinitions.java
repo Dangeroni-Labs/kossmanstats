@@ -85,6 +85,27 @@ public final class KossmanStatDefinitions {
 			MAX_LEVEL
 	);
 
+	public static final StatDefinition STEADY_GUARD = new StatDefinition(
+			new StatId("gokistats:steady_guard"),
+			"steady_guard",
+			"Steady Guard",
+			MAX_LEVEL
+	);
+
+	public static final StatDefinition REAPER = new StatDefinition(
+			new StatId("gokistats:reaper"),
+			"reaper",
+			"Reaper",
+			MAX_LEVEL
+	);
+
+	public static final StatDefinition ROLL = new StatDefinition(
+			new StatId("gokistats:roll"),
+			"roll",
+			"Roll",
+			MAX_LEVEL
+	);
+
 	public static final List<StatDefinition> ALL = List.of(
 			MINING,
 			HEALTH,
@@ -96,7 +117,10 @@ public final class KossmanStatDefinitions {
 			PROTECTION,
 			TEMPERING,
 			TOUGH_SKIN,
-			FEATHER_FALL
+			FEATHER_FALL,
+			STEADY_GUARD,
+			REAPER,
+			ROLL
 	);
 	private static final Map<String, StatDefinition> BY_COMMAND_NAME = ALL.stream()
 			.collect(Collectors.toUnmodifiableMap(StatDefinition::commandName, stat -> stat));
