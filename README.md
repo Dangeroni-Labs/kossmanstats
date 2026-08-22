@@ -4,6 +4,12 @@
 
 This project started as a port of GokiStats to modern Minecraft versions, but it is becoming more than a direct port: legacy systems are being rewritten, architecture is being modernized, and some stats and mechanics may be rebalanced, extended, or replaced.
 
+## Download
+
+- [Modrinth](https://modrinth.com/mod/kossman-stats)
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/kossman-stats)
+- [GitHub Releases](https://github.com/Dangeroni-Labs/kossmanstats/releases)
+
 ## Targets
 
 * Minecraft 26.2 - Fabric
@@ -30,4 +36,4 @@ GPL-3.0
 
 ##### developer
 
-<sub>[Modrinth profile](https://modrinth.com/user/dangeroni) ₓ [CurseForge profile](https://www.curseforge.com/members/dangeroni/projects) ₓ [Github profile](https://github.com/stkossman) ₓ [Github organization](https://github.com/Dangeroni-Labs)</sub>
+<sub>[Modrinth project](https://modrinth.com/mod/kossman-stats) ₓ [CurseForge project](https://www.curseforge.com/minecraft/mc-mods/kossman-stats) ₓ [Modrinth profile](https://modrinth.com/user/dangeroni) ₓ [CurseForge profile](https://www.curseforge.com/members/dangeroni/projects) ₓ [Github profile](https://github.com/stkossman) ₓ [Github organization](https://github.com/Dangeroni-Labs)</sub>
