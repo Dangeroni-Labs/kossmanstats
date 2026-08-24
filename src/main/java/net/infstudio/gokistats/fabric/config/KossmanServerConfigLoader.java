@@ -119,12 +119,17 @@ public final class KossmanServerConfigLoader {
 		Map<String, KossmanStatTuning> stats = new LinkedHashMap<>();
 
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
+			KossmanStatTuning defaults = KossmanStatTuning.defaultsFor(stat);
 			RawStatTuning raw = rawStats == null ? null : rawStats.get(stat.commandName());
-			boolean enabled = raw == null || raw.enabled == null ? KossmanStatTuning.DEFAULT.enabled() : raw.enabled;
+			boolean enabled = raw == null || raw.enabled == null ? defaults.enabled() : raw.enabled;
 			double effectMultiplier = raw == null
-					? KossmanStatTuning.DEFAULT.effectMultiplier()
-					: nonNegativeDouble(raw.effectMultiplier, KossmanStatTuning.DEFAULT.effectMultiplier(), "stats." + stat.commandName() + ".effectMultiplier", warnings);
-			stats.put(stat.commandName(), new KossmanStatTuning(enabled, effectMultiplier));
+					? defaults.effectMultiplier()
+					: nonNegativeDouble(raw.effectMultiplier, defaults.effectMultiplier(), "stats." + stat.commandName() + ".effectMultiplier", warnings);
+			boolean perkEnabled = raw == null || raw.perkEnabled == null ? defaults.perkEnabled() : raw.perkEnabled;
+			int perkUnlockLevel = raw == null
+					? defaults.perkUnlockLevel()
+					: positiveInt(raw.perkUnlockLevel, defaults.perkUnlockLevel(), "stats." + stat.commandName() + ".perkUnlockLevel", warnings);
+			stats.put(stat.commandName(), new KossmanStatTuning(enabled, effectMultiplier, perkEnabled, perkUnlockLevel));
 		}
 
 		return stats;
@@ -197,7 +202,7 @@ public final class KossmanServerConfigLoader {
 			config.deathPenalty = RawDeathPenaltyTuning.defaults();
 			config.stats = new LinkedHashMap<>();
 			for (StatDefinition stat : KossmanStatDefinitions.ALL) {
-				config.stats.put(stat.commandName(), RawStatTuning.defaults());
+				config.stats.put(stat.commandName(), RawStatTuning.defaults(stat));
 			}
 			return config;
 		}
@@ -252,11 +257,16 @@ public final class KossmanServerConfigLoader {
 	static final class RawStatTuning {
 		Boolean enabled;
 		Number effectMultiplier;
+		Boolean perkEnabled;
+		Number perkUnlockLevel;
 
-		static RawStatTuning defaults() {
+		static RawStatTuning defaults(StatDefinition stat) {
+			KossmanStatTuning defaults = KossmanStatTuning.defaultsFor(stat);
 			RawStatTuning tuning = new RawStatTuning();
-			tuning.enabled = KossmanStatTuning.DEFAULT.enabled();
-			tuning.effectMultiplier = KossmanStatTuning.DEFAULT.effectMultiplier();
+			tuning.enabled = defaults.enabled();
+			tuning.effectMultiplier = defaults.effectMultiplier();
+			tuning.perkEnabled = defaults.perkEnabled();
+			tuning.perkUnlockLevel = defaults.perkUnlockLevel();
 			return tuning;
 		}
 	}

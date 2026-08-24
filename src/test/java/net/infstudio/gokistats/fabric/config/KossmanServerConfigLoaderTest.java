@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import net.infstudio.gokistats.core.config.KossmanBalanceTuning;
+import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -26,6 +27,19 @@ class KossmanServerConfigLoaderTest {
 
 		assertTrue(Files.exists(configPath));
 		assertEquals(KossmanBalanceTuning.DEFAULT, tuning);
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
+	void defaultMiningPerkSettingsAreWrittenAndLoaded() {
+		Path configPath = tempDir.resolve("kossmanstats.json");
+		List<String> warnings = new ArrayList<>();
+
+		KossmanBalanceTuning tuning = KossmanServerConfigLoader.load(configPath, warnings::add);
+
+		assertTrue(Files.exists(configPath));
+		assertTrue(tuning.stat(KossmanStatDefinitions.MINING).perkEnabled());
+		assertEquals(45, tuning.perkUnlockLevel(KossmanStatDefinitions.MINING));
 		assertTrue(warnings.isEmpty());
 	}
 
@@ -48,7 +62,9 @@ class KossmanServerConfigLoaderTest {
 				  "stats": {
 				    "mining": {
 				      "enabled": false,
-				      "effectMultiplier": 1.5
+				      "effectMultiplier": 1.5,
+				      "perkEnabled": false,
+				      "perkUnlockLevel": 48
 				    }
 				  }
 				}
@@ -64,6 +80,8 @@ class KossmanServerConfigLoaderTest {
 		assertEquals(0.2D, tuning.deathPenalty().lossRate());
 		assertFalse(tuning.stats().get("mining").enabled());
 		assertEquals(1.5D, tuning.stats().get("mining").effectMultiplier());
+		assertFalse(tuning.stat(KossmanStatDefinitions.MINING).perkEnabled());
+		assertEquals(48, tuning.perkUnlockLevel(KossmanStatDefinitions.MINING));
 		assertTrue(warnings.isEmpty());
 	}
 

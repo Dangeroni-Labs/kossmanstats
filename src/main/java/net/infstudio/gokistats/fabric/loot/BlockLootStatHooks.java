@@ -72,6 +72,7 @@ public final class BlockLootStatHooks {
 
 			applyTreasureFinder(player, context, state, drops);
 			applyMiningMagician(player, context, state, drops);
+			applyMasterMiner(player, context, state, drops);
 		});
 	}
 
@@ -120,6 +121,14 @@ public final class BlockLootStatHooks {
 		if (!reward.isEmpty()) {
 			drops.add(reward);
 		}
+	}
+
+	private static void applyMasterMiner(ServerPlayer player, LootContext context, BlockState state, List<ItemStack> drops) {
+		if (hasSilkTouch(context)) {
+			return;
+		}
+
+		MiningPerkDropProcessor.apply(player, state, drops);
 	}
 
 	private static ItemStack extraMagicianReward(Block brokenBlock, LootContext context, List<ItemStack> drops) {

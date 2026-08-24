@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
+import net.infstudio.gokistats.core.perk.KossmanStatPerks;
 
 public record KossmanBalanceTuning(
 		int maxStatLevel,
@@ -26,7 +27,7 @@ public record KossmanBalanceTuning(
 	}
 
 	public KossmanStatTuning stat(StatDefinition stat) {
-		return stats.getOrDefault(stat.commandName(), KossmanStatTuning.DEFAULT);
+		return stats.getOrDefault(stat.commandName(), KossmanStatTuning.defaultsFor(stat));
 	}
 
 	public boolean isEnabled(StatDefinition stat) {
@@ -49,10 +50,27 @@ public record KossmanBalanceTuning(
 		return Math.min(Math.max(0, storedLevel), maxStatLevel);
 	}
 
+	public boolean isPerkEnabled(StatDefinition stat) {
+		return KossmanStatPerks.forStat(stat).isPresent() && stat(stat).perkEnabled();
+	}
+
+	public int perkUnlockLevel(StatDefinition stat) {
+		return KossmanStatPerks.forStat(stat)
+				.map(perk -> {
+					int configuredLevel = stat(stat).perkUnlockLevel();
+					return configuredLevel > 0 ? configuredLevel : perk.defaultUnlockLevel();
+				})
+				.orElse(Integer.MAX_VALUE);
+	}
+
+	public boolean isPerkUnlocked(StatDefinition stat, int storedLevel) {
+		return isPerkEnabled(stat) && effectiveLevel(stat, storedLevel) >= perkUnlockLevel(stat);
+	}
+
 	private static Map<String, KossmanStatTuning> defaultStats() {
 		Map<String, KossmanStatTuning> defaults = new LinkedHashMap<>();
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
-			defaults.put(stat.commandName(), KossmanStatTuning.DEFAULT);
+			defaults.put(stat.commandName(), KossmanStatTuning.defaultsFor(stat));
 		}
 		return defaults;
 	}

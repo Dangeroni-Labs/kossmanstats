@@ -42,6 +42,7 @@ public final class KossmanStatsScreen extends Screen {
 	private static final int SCROLLBAR_GUTTER = 10;
 	private static final int TITLE_COLOR = 0xFFFFFFFF;
 	private static final int TEXT_COLOR = 0xFFD8D8D8;
+	private static final int MASTERED_NAME_COLOR = 0xFFF0C04A;
 	private static final int MUTED_COLOR = 0xFFA0A0A0;
 	private static final int PANEL_COLOR = 0xB0202020;
 	private static final int MISSING_ICON_BG = 0x80303030;
@@ -146,14 +147,14 @@ public final class KossmanStatsScreen extends Screen {
 
 	private void renderStatEntry(GuiGraphicsExtractor graphics, StatDefinition stat, int left, int y) {
 		int level = ClientStatSnapshotCache.level(stat);
-		Component name = Component.literal(stat.displayName());
+		Component name = Component.literal(StatPresentation.displayName(stat, level));
 		Component levelText = Component.literal("Lv. " + level);
 		Component nextText = Component.literal(nextCostText(stat, level));
 		int textY = centeredTextY(y);
 		int iconY = centeredIconY(y);
 
 		renderIcon(graphics, stat, level, left, iconY);
-		graphics.text(font, name, nameX(left), textY, TEXT_COLOR);
+		graphics.text(font, trimToWidth(name, maxNameWidth(left)), nameX(left), textY, nameColor(stat, level));
 		graphics.text(font, levelText, levelX(left), textY, TEXT_COLOR);
 		graphics.text(font, nextText, nextX(left), textY, MUTED_COLOR);
 	}
@@ -400,6 +401,10 @@ public final class KossmanStatsScreen extends Screen {
 		return left + ICON_RENDER_SIZE + ICON_NAME_GAP;
 	}
 
+	private int maxNameWidth(int left) {
+		return Math.max(0, levelX(left) - nameX(left) - 8);
+	}
+
 	private int levelX(int left) {
 		return nextX(left) - LEVEL_WIDTH;
 	}
@@ -414,6 +419,28 @@ public final class KossmanStatsScreen extends Screen {
 
 	private int upgradeButtonX(int left) {
 		return left + columnWidth() - BUTTON_SIZE;
+	}
+
+	private String displayName(StatDefinition stat, int level) {
+		return StatPresentation.displayName(stat, level);
+	}
+
+	private int nameColor(StatDefinition stat, int level) {
+		return StatPresentation.activePerk(stat, level).isPresent()
+				? MASTERED_NAME_COLOR
+				: TEXT_COLOR;
+	}
+
+	private Component trimToWidth(Component text, int maxWidth) {
+		String literal = text.getString();
+		if (font.width(literal) <= maxWidth) {
+			return text;
+		}
+
+		String ellipsis = "...";
+		int ellipsisWidth = font.width(ellipsis);
+		String trimmed = font.plainSubstrByWidth(literal, Math.max(0, maxWidth - ellipsisWidth));
+		return Component.literal(trimmed + ellipsis);
 	}
 
 	private void renderScrollbar(GuiGraphicsExtractor graphics) {

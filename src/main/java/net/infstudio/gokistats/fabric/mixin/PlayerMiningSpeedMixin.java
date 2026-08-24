@@ -15,7 +15,7 @@ public abstract class PlayerMiningSpeedMixin {
 	@Inject(method = "getDestroySpeed", at = @At("RETURN"), cancellable = true)
 	private void kossmanstats$applyMiningSpeed(BlockState blockState, CallbackInfoReturnable<Float> cir) {
 		if ((Object) this instanceof ServerPlayer player) {
-			cir.setReturnValue(ToolSpeedHooks.applyServerToolSpeedBonus(player, cir.getReturnValueF()));
+			cir.setReturnValue(ToolSpeedHooks.applyServerToolSpeedBonus(player, blockState, cir.getReturnValueF()));
 			return;
 		}
 

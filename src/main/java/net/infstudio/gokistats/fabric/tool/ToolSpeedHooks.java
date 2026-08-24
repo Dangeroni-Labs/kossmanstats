@@ -5,10 +5,12 @@ import java.util.function.ToIntFunction;
 import net.infstudio.gokistats.core.definition.KossmanStatDefinitions;
 import net.infstudio.gokistats.core.definition.StatDefinition;
 import net.infstudio.gokistats.core.formula.StatFormulas;
+import net.infstudio.gokistats.fabric.perk.MomentumPerkHandler;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import net.infstudio.gokistats.fabric.tag.KossmanTags;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class ToolSpeedHooks {
 	private static final List<ToolSpeedStat> TOOL_SPEED_STATS = List.of(
@@ -21,12 +23,13 @@ public final class ToolSpeedHooks {
 	private ToolSpeedHooks() {
 	}
 
-	public static float applyServerToolSpeedBonus(ServerPlayer player, float originalSpeed) {
-		return applyToolSpeedBonus(
+	public static float applyServerToolSpeedBonus(ServerPlayer player, BlockState state, float originalSpeed) {
+		float statSpeed = applyToolSpeedBonus(
 				player.getMainHandItem(),
 				originalSpeed,
 				stat -> KossmanPlayerStateStorage.getLevel(player, stat)
 		);
+		return MomentumPerkHandler.applySpeedBonus(player, state, statSpeed);
 	}
 
 	public static float applyToolSpeedBonus(

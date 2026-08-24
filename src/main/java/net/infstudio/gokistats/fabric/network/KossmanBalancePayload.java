@@ -59,11 +59,13 @@ public record KossmanBalancePayload(KossmanBalanceTuning tuning) implements Cust
 			String commandName = buf.readUtf(64);
 			boolean enabled = buf.readBoolean();
 			double effectMultiplier = readNonNegativeDouble(buf);
-			stats.put(commandName, new KossmanStatTuning(enabled, effectMultiplier));
+			boolean perkEnabled = buf.readBoolean();
+			int perkUnlockLevel = Math.max(0, buf.readVarInt());
+			stats.put(commandName, new KossmanStatTuning(enabled, effectMultiplier, perkEnabled, perkUnlockLevel));
 		}
 
 		for (StatDefinition stat : KossmanStatDefinitions.ALL) {
-			stats.putIfAbsent(stat.commandName(), KossmanStatTuning.DEFAULT);
+			stats.putIfAbsent(stat.commandName(), KossmanStatTuning.defaultsFor(stat));
 		}
 
 		return new KossmanBalancePayload(new KossmanBalanceTuning(
@@ -99,6 +101,8 @@ public record KossmanBalancePayload(KossmanBalanceTuning tuning) implements Cust
 			buf.writeUtf(stat.commandName(), 64);
 			buf.writeBoolean(statTuning.enabled());
 			writeNonNegativeDouble(buf, statTuning.effectMultiplier());
+			buf.writeBoolean(statTuning.perkEnabled());
+			buf.writeVarInt(Math.max(0, statTuning.perkUnlockLevel()));
 		}
 	}
 

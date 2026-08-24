@@ -10,6 +10,7 @@ import net.infstudio.gokistats.fabric.loot.BlockLootStatHooks;
 import net.infstudio.gokistats.fabric.network.KossmanBalanceSync;
 import net.infstudio.gokistats.fabric.network.StatSnapshotSync;
 import net.infstudio.gokistats.fabric.network.StatUpgradeRequests;
+import net.infstudio.gokistats.fabric.perk.MomentumPerkHandler;
 import net.infstudio.gokistats.fabric.state.KossmanPlayerStateStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ public final class KossmanStats implements ModInitializer {
 		HealthAttributeHandler.register();
 		SteadyGuardAttributeHandler.register();
 		StatDeathPenaltyHandler.register();
+		MomentumPerkHandler.register();
 		BlockLootStatHooks.register();
 		KossmanStatsCommands.register();
 		LOGGER.info("Kossman Stats initialized.");
