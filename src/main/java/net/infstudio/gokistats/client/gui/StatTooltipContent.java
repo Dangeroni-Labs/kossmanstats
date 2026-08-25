@@ -37,7 +37,11 @@ final class StatTooltipContent {
 		}
 
 		if (stat.equals(KossmanStatDefinitions.CHOPPING)) {
-			return bonusTooltip(stat, level, displayName, "Increases chopping speed with axes.", "speed", currentLevel -> StatFormulas.toolSpeedBonus(stat, currentLevel), true);
+			return appendPerkLine(
+					stat,
+					level,
+					bonusTooltip(stat, level, displayName, "Increases chopping speed with axes.", "speed", currentLevel -> StatFormulas.toolSpeedBonus(stat, currentLevel), true)
+			);
 		}
 
 		if (stat.equals(KossmanStatDefinitions.TRIMMING)) {

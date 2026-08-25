@@ -18,9 +18,17 @@ public final class KossmanStatPerks {
 			"Consecutive digging increases digging speed.",
 			25
 	);
+	public static final StatPerkDefinition LUMBERJACK = new StatPerkDefinition(
+			KossmanStatDefinitions.CHOPPING,
+			"Lumberjack",
+			"Chopping one log can fell the whole tree.",
+			45
+	);
 	private static final Map<StatDefinition, StatPerkDefinition> BY_STAT = Map.of(
 			MASTER_MINER.stat(),
 			MASTER_MINER,
+			LUMBERJACK.stat(),
+			LUMBERJACK,
 			MOMENTUM.stat(),
 			MOMENTUM
 	);

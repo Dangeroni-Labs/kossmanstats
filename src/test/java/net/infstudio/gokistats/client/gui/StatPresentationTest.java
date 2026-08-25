@@ -53,4 +53,23 @@ class StatPresentationTest {
 		assertEquals("Perk unlocks at Lv. 25", locked.get(4).getString());
 		assertEquals("Perk: Consecutive digging increases digging speed.", unlocked.get(4).getString());
 	}
+
+	@Test
+	void choppingDisplayNameSwitchesAtPerkUnlockLevel() {
+		KossmanBalance.setCurrent(KossmanBalanceTuning.DEFAULT);
+
+		assertEquals("Chopping", StatPresentation.displayName(KossmanStatDefinitions.CHOPPING, 44));
+		assertEquals("Lumberjack", StatPresentation.displayName(KossmanStatDefinitions.CHOPPING, 45));
+	}
+
+	@Test
+	void choppingTooltipShowsLockedAndUnlockedPerkLines() {
+		KossmanBalance.setCurrent(KossmanBalanceTuning.DEFAULT);
+
+		List<Component> locked = StatTooltipContent.forStat(KossmanStatDefinitions.CHOPPING, 44);
+		List<Component> unlocked = StatTooltipContent.forStat(KossmanStatDefinitions.CHOPPING, 45);
+
+		assertEquals("Perk unlocks at Lv. 45", locked.get(4).getString());
+		assertEquals("Perk: Chopping one log can fell the whole tree.", unlocked.get(4).getString());
+	}
 }

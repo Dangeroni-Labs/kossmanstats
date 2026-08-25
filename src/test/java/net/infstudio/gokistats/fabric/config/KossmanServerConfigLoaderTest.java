@@ -44,6 +44,19 @@ class KossmanServerConfigLoaderTest {
 	}
 
 	@Test
+	void defaultChoppingPerkSettingsAreWrittenAndLoaded() {
+		Path configPath = tempDir.resolve("kossmanstats.json");
+		List<String> warnings = new ArrayList<>();
+
+		KossmanBalanceTuning tuning = KossmanServerConfigLoader.load(configPath, warnings::add);
+
+		assertTrue(Files.exists(configPath));
+		assertTrue(tuning.stat(KossmanStatDefinitions.CHOPPING).perkEnabled());
+		assertEquals(45, tuning.perkUnlockLevel(KossmanStatDefinitions.CHOPPING));
+		assertTrue(warnings.isEmpty());
+	}
+
+	@Test
 	void validValuesAreLoaded() throws IOException {
 		Path configPath = write("""
 				{

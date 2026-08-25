@@ -22,4 +22,12 @@ class KossmanBalanceTuningPerkTest {
 		assertFalse(tuning.isPerkUnlocked(KossmanStatDefinitions.DIGGING, 24));
 		assertTrue(tuning.isPerkUnlocked(KossmanStatDefinitions.DIGGING, 25));
 	}
+
+	@Test
+	void choppingPerkUnlocksAtLevelFortyFiveByDefault() {
+		KossmanBalanceTuning tuning = KossmanBalanceTuning.DEFAULT;
+
+		assertFalse(tuning.isPerkUnlocked(KossmanStatDefinitions.CHOPPING, 44));
+		assertTrue(tuning.isPerkUnlocked(KossmanStatDefinitions.CHOPPING, 45));
+	}
 }
