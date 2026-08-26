@@ -28,8 +28,6 @@ Future releases will focus more heavily on Kossman Stats-specific redesigns and 
 
 Based on the original [GokiStats](https://github.com/InfinityStudio/GokiStats) by InfinityStudio.
 
-Active continuation: [Dangeroni-Labs/kossmanstats](https://github.com/Dangeroni-Labs/kossmanstats).
-
 ## License
 
 GPL-3.0
